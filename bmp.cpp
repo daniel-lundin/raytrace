@@ -22,18 +22,22 @@ void BMP::generateShit()
     {
         for(int j=0;j<m_height;++j)
         {
-            pixel24* pix = &m_pixelArray[i+j*m_width];
-            pix->r = i;
-            pix->g = i;
-            pix->b = i;
+            setPixelAt(i,j,i,i,i);
         }
     }
 }
 
+void BMP::setPixelAt(int x, int y, unsigned char r, unsigned char g, unsigned char b)
+{
+    pixel24* pix = &m_pixelArray[x+y*m_width];
+    pix->r = r;
+    pix->g = g;
+    pix->b = b;
+}
+
 ostream& operator<<(ostream& os, const BMP& b)
 {
-    unsigned int arraysize = b.m_width*b.m_height + 1000;
-    unsigned int pix_arr_max = b.m_width*b.m_height;
+    unsigned int arraysize = b.m_width*b.m_height*4 + 10000;
     unsigned char* bmpdata =  new unsigned char[arraysize];
     
     // Magic word
@@ -81,6 +85,8 @@ ostream& operator<<(ostream& os, const BMP& b)
     offset = 54;
     for(int i = b.m_height-1; i >= 0; --i)
     {
+
+        int rowlength = 0;
         for(int j = 0; j < b.m_width; ++j)
         {           
             pixel24* pix = &b.m_pixelArray[i*b.m_width + j];
@@ -88,18 +94,26 @@ ostream& operator<<(ostream& os, const BMP& b)
             bmpdata[offset+1] = pix->g;
             bmpdata[offset+2] = pix->r;            
             offset += 3;
+            rowlength += 3;
         }
-        // zero pad so that each row is divisable by four
-        offset += 4 - offset % 4;
+
+        // zero pad so that each row length is divisable by four
+        while(rowlength % 4)
+        {
+            ++offset;
+            ++rowlength;            
+        }
+
     }
     
     // now we write file size to header and compressed size
     unsigned int filesz = offset;
+    unsigned int raw_img_size = 54 - offset;
     memcpy(&bmpdata[2], &filesz, 4);
-    memcpy(&bmpdata[34], &filesz, 4);
+    memcpy(&bmpdata[34], &raw_img_size, 4);
     
     os.write((const char*)bmpdata, offset);
-
+    os.flush();
     // clean up
     delete bmpdata;
     return os;

@@ -14,18 +14,20 @@ using std::pair;
 // foward declarations
 class RayWorld;
 
+enum ParseEntities {SPHERE, CAMERA, PLANE};
+
 class ParseEntity
 {
 public:
     ParseEntity(const string& type, ParseEntity* parent);
     void addLine(const string& line, const int lineno);
     
-    const string& type();
+    ParseEntities type();
     virtual void addEntity(ParseEntity* entity);
     virtual ParseEntity* parent();
     virtual void dump();
 private:
-    string m_type;
+    ParseEntities m_type;
     ParseEntity* m_parent;    
     list<pair<int, string> > m_lines;    
     list<ParseEntity*> m_children;
@@ -44,6 +46,9 @@ public:
     ParseEntity* parent();
     void dump();
 private:
+    void evaluateSphereEntity(ParseEntity* entity);
+    void evaluateCameraEntity(ParseEntity* entity);
+    // members
     RayWorld* m_world;
     vector<ParseEntity*> m_entities;
     ParseEntity* m_current;

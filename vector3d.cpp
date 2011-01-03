@@ -49,6 +49,11 @@ Vector3D& Vector3D::setZ(float z)
 // Operations
 Vector3D& Vector3D::normalize()
 {
+    float len = length();
+    m_x /= len;
+    m_y /= len;
+    m_z /= len;
+
     return *this;
 }
 
@@ -71,7 +76,7 @@ float Vector3D::dotProduct(const Vector3D& other) const
 }
 Vector3D Vector3D::crossProduct(const Vector3D& other) const
 {    
-    return Vector3D(y()*other.z() - z()*other.x(),
+    return Vector3D(y()*other.z() - z()*other.y(),
                     z()*other.x() - x()*other.z(),
                     x()*other.y() - y()*other.x());
 }

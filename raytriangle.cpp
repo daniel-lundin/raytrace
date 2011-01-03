@@ -1,6 +1,5 @@
 #include "raytriangle.h"
 #include "rayplane.h"
-#include <QDebug>
 
 RayTriangle::RayTriangle(const Vector3D& v1, const Vector3D& v2, const Vector3D& v3, const RayMaterial& material)
     : m_v1(v1), m_v2(v2), m_v3(v3), m_material(material)
@@ -8,7 +7,7 @@ RayTriangle::RayTriangle(const Vector3D& v1, const Vector3D& v2, const Vector3D&
     Vector3D v12 = m_v2 - m_v1;
     Vector3D v13 = m_v3 - m_v1;
     Vector3D planeNormal = v12.crossProduct(v13);
-    m_plane = new RayPlane(v1, planeNormal, RayMaterial(1, RayColor(), 1, 1));
+    m_plane = new RayPlane(v1, planeNormal, RayMaterial(RayColor(), 1, 1, 1, 1, 1));
 }
 
 RayTriangle::~ RayTriangle()
@@ -18,12 +17,12 @@ RayTriangle::~ RayTriangle()
 
 
 
-bool RayTriangle::intersects(const Vector3D& start, const Vector3D& direction, QList<Intersection>& intersections)
+bool RayTriangle::intersects(const Vector3D& start, const Vector3D& direction, std::vector<Intersection>& intersections)
 {
-    QList<Intersection> planeIntersections;
+    std::vector<Intersection> planeIntersections;
     if(!m_plane->intersects(start, direction, planeIntersections))
         return false;
-    Intersection i = planeIntersections.first();
+    Intersection i = *planeIntersections.begin();
     return false;
     // form to vector from sides on triangle
     Vector3D side1 = m_v2 - m_v1;

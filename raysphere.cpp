@@ -7,7 +7,7 @@ RaySphere::RaySphere(const Vector3D& center, float radius, const RayMaterial& ma
 }
 
 
-bool RaySphere::intersects(const Vector3D& start, const Vector3D& direction, QList<Intersection>& intersections)
+bool RaySphere::intersects(const Vector3D& start, const Vector3D& direction, std::vector<Intersection>& intersections)
 {
     // Line = x(t) = o + t*v
     // Sphere = (x - c)(x - c) = r^2
@@ -33,6 +33,8 @@ bool RaySphere::intersects(const Vector3D& start, const Vector3D& direction, QLi
 
         // Normal of itersection
         Vector3D normal = inter.point() - m_center;
+        rand();
+
         normal.normalize();
         // Check if it's a hit from inside by doting direction with normal, if negative, hit is from inside(used for refractions)
         //inter.setInsideHit(Vector3D::dotProduct(normal, direction) < 0);

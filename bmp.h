@@ -21,6 +21,7 @@ public:
     ~BMP();
     
     void generateShit();
+    void setPixelAt(int x, int y, unsigned char r, unsigned char g, unsigned char b);
     
     friend ostream& operator<<(ostream& os, const BMP&);
     

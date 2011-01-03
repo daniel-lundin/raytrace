@@ -12,8 +12,13 @@ using std::istringstream;
 using std::make_pair;
 
 ParseEntity::ParseEntity(const string& type, ParseEntity* parent)
-    : m_type(type), m_parent(parent)
+    : m_parent(parent)
 {
+    if(type == "sphere")
+        m_type = SPHERE;
+    else if(type == "camera")    
+        m_type = CAMERA;
+    
 }
 
 void ParseEntity::addLine(const string& line, const int lineno)
@@ -21,7 +26,7 @@ void ParseEntity::addLine(const string& line, const int lineno)
     m_lines.push_back(make_pair(lineno,line));
 }
 
-const string& ParseEntity::type()
+ParseEntities ParseEntity::type()
 {
     return m_type;
 }
@@ -109,13 +114,14 @@ void Parser::evaluateEntity(ParseEntity* entity)
 {
     switch(entity->type())
     {
-        case "sphere":
-            cout << "it's a sphere" << endl;
+        case SPHERE:
+            evaluateSphereEntity(entity);
             break;
-        case "camera":
-            cout << "It's a camera" << endl;
+        case CAMERA:
+            evaluateCameraEntity(entity);
             break;
-            
+        default:
+
     }
 }
 
@@ -138,4 +144,14 @@ void Parser::dump()
         (*it)->dump();
         ++it;
     }
+}
+
+void Parser::evaluateSphereEntity(ParseEntity* entity)
+{
+    e
+}
+
+void Parser::evaluateCameraEntity(ParseEntity* entity)
+{
+    
 }

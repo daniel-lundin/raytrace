@@ -8,7 +8,7 @@ RayPlane::RayPlane(const Vector3D& point, const Vector3D& up, const RayMaterial&
 
 
 
-bool RayPlane::intersects(const Vector3D& start, const Vector3D& direction, QList<Intersection>& intersections)
+bool RayPlane::intersects(const Vector3D& start, const Vector3D& direction, std::vector<Intersection>& intersections)
 {
     float l = (m_up.x()*m_point.x() + m_up.y()*m_point.y() + m_up.z()*m_point.z());
     l -= (m_up.x() * start.x() + m_up.y()*start.y() + m_up.z()*start.z());

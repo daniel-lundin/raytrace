@@ -6,12 +6,14 @@
 #include "RayColor.h"
 #include "raymaterial.h"
 
+#include <vector>
+
 class RaySphere : public RayObject
 {
 public:
     RaySphere(const Vector3D& center, float radius, const RayMaterial&);
 
-    bool intersects(const Vector3D& start, const Vector3D& direction, QList<Intersection>&);
+    bool intersects(const Vector3D& start, const Vector3D& direction, std::vector<Intersection>&);
     RayMaterial material();
 
     // Setters

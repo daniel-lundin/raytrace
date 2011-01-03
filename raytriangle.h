@@ -5,6 +5,8 @@
 #include "rayobject.h"
 #include "raymaterial.h"
 
+#include <vector>
+
 class RayPlane;
 
 class RayTriangle : public RayObject
@@ -13,7 +15,7 @@ public:
     RayTriangle(const Vector3D& v1, const Vector3D& v2, const Vector3D& v3, const RayMaterial&);
     ~RayTriangle();
 
-    bool intersects(const Vector3D& start, const Vector3D& direction, QList<Intersection>&);
+    bool intersects(const Vector3D& start, const Vector3D& direction, std::vector<Intersection>&);
     RayMaterial material();
 
 private:

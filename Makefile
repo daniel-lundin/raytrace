@@ -1,7 +1,19 @@
 CXX = g++
 
-OBJECTS = bmp.o intersection.o parser.o pointlight.o raycamera.o raycanvas.o raycolor.o rayobject.o \
-        raymaterial.o rayplane.o raysphere.o raytriangle.o rayworld.o vector3d.o
+OBJECTS = bmp.o \
+	  intersection.o \
+	  parser.o \
+	  pointlight.o \
+	  raycamera.o \
+	  raycanvas.o \
+	  raycolor.o \
+	  rayobject.o \
+          raymaterial.o \
+	  rayplane.o \
+	  raysphere.o \
+	  raytriangle.o \
+	  rayworld.o \
+	  vector3d.o
 
 # Linking
 raytrace : main.cpp $(OBJECTS)
@@ -27,9 +39,6 @@ raycanvas.o: raycamera.cpp raycamera.h
 
 raycolor.o: raycolor.cpp raycolor.h
 	$(CXX) -c raycolor.cpp
-
-raycanvas.o: raycanvas.cpp raycanvas.h
-	$(CXX) -c raycanvas.cpp
 
 rayobject.o: rayobject.h 
 	$(CXX) -c rayobject.cpp

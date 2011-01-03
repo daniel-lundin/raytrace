@@ -1,7 +1,6 @@
 #include "raycanvas.h"
 #include "vector3d.h"
 #include <iostream>
-#include <QDebug>
 
 using namespace std;
 
@@ -33,14 +32,24 @@ Vector3D RayCanvas::vectorThrough(int pixelRow, int pixelCol)
     return v;
 }
 
-void RayCanvas::setColor(int pixelRow, int pixelCol, const RayColor& color)
+void RayCanvas::setColor(int x, int y, const RayColor& color)
 {
-    int index = pixelRow*m_pixWidth + pixelCol;
+    int index = y*m_pixWidth + x;
+    if (index > m_pixelColors.size()-1)
+    {
+        return;
+    }
     m_pixelColors[index] = color;
 }
 
-RayColor RayCanvas::color(int pixelRow, int pixelCol)
+RayColor RayCanvas::color(int x, int y)
 {
-    int index = pixelRow*m_pixWidth + pixelCol;
+    int index = y*m_pixWidth + x;
+    if (index > m_pixelColors.size()-1)
+    {
+        //qDebug() << "color out of range " << pixelRow << pixelCol;
+        //qDebug() << m_pixelColors.size();
+        return RayColor();
+    }
     return m_pixelColors[index];
 }

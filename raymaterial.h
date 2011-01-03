@@ -5,20 +5,27 @@
 class RayMaterial
 {
 public:
-    RayMaterial(float reflection, const RayColor& color, float refractionRate = 0, float brytningsIndex = 1);
+    RayMaterial(const RayColor& color,
+                float ambient,
+                float diffuse,
+                float specular,
+                float specPower,
+                float reflection);
 
-    float ambient();
-    float specular();
-    float specPower();
-    float reflectionRate();
-    float refractionRate();
-    float brytningsIndex();
-    RayColor& color();
+    float ambient() const;
+    float diffuse() const;
+    float specular() const;
+    float specPower() const;
+    float reflection() const;
+    float refractionRate() const;
+    float brytningsIndex() const;
+    const RayColor& color() const;
 private:
     float m_ambient;
+    float m_diffuse;
     float m_specular;
     float m_specPower;
-    float m_reflectionRate;
+    float m_reflection;
     float m_refractionRate;
     float m_brytningsIndex;
     RayColor m_color;

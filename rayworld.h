@@ -5,37 +5,12 @@
 #include "raycanvas.h"
 #include "raycamera.h"
 #include "pointlight.h"
-#include <QList>
-#include <QRunnable>
-#include <QThread>
+#include <vector>
+
 using std::list;
 
 class RayWorld;
 
-class PixelTracer : public QThread
-{
-public:
-    PixelTracer(int xStart,
-                int xEnd,
-                int yStart,
-                int yEnd,                
-                const Vector3D& origin,
-                int reflectionDepth,
-                RayWorld* world,
-                RayCanvas* canvas);
-    void run();
-
-private:
-    int m_xStart;
-    int m_xEnd;
-    int m_yStart;
-    int m_yEnd;
-    Vector3D m_origin;
-    int m_reflectionDepth;
-
-    RayCanvas* m_canvas;
-    RayWorld* m_world;
-};
 
 class RayWorld
 {
@@ -53,8 +28,8 @@ public:
     bool closestIntersection(const Vector3D& start, const Vector3D& direction, Intersection&);
 private:
     RayCamera m_camera;
-    QList<RayObject*> m_objects;
-    QList<PointLight*> m_lights;
+    std::vector<RayObject*> m_objects;
+    std::vector<PointLight*> m_lights;
     RayCanvas* m_canvas;
 
 };
