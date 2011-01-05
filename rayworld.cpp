@@ -44,21 +44,7 @@ void* pixelTrace(void* threadData)
 
 RayWorld::RayWorld()
 {    
-    RayCamera camera;
-    camera.setLocation(Vector3D(0,6,0));
-    camera.setLookat(Vector3D(0,0,10));
-    camera.setUp(Vector3D(0,1,0));
-    m_camera = camera;
-
-    //m_objects.push_back(new RayPlane(Vector3D(0,0,0), Vector3D(0,1,0), RayMaterial(0.2, RayColor(60,40,40))));
-    //m_objects.push_back(new RayPlane(Vector3D(0,0,21), Vector3D(0,0,-1), RayMaterial(0.1, RayColor(140,140,76))));
-
-   // m_objects.push_back(new RayTriangle(Vector3D(1,1,10), Vector3D(-1,1,10), Vector3D(0,1,10), RayMaterial(0, RayColor(255,0,255))));
-    m_objects.push_back(new RaySphere(Vector3D(-1,2,15), 1.5, RayMaterial(RayColor(80,80,60), 0.2, 1.0, 1, 20, 0)));
-    m_objects.push_back(new RaySphere(Vector3D(2,2,9), 1.5, RayMaterial(RayColor(60,80,80), 0.2, 1.0, 1, 20, 0)));
-
-    m_lights.push_back(new PointLight(Vector3D(100,80,0)));
-    //m_lights.push_back(new PointLight(Vector3D(-30,10,10)));
+    m_lights.push_back(new PointLight(Vector3D(0,80,0)));
 
     m_canvas = 0;
 }
@@ -80,10 +66,13 @@ void RayWorld::setCamera(const RayCamera& camera)
 
 void RayWorld::render(int pixelWidth, int pixelHeight)
 {
+    cout << "Objs: " << m_objects.size() << endl;
     delete m_canvas;
-    //Vector3D origin(0, 15, -2);
-    //m_canvas = new RayCanvas(origin, Vector3D(0,0,10), Vector3D(0,1,0), pixelWidth, pixelHeight);
-    m_canvas = new RayCanvas(m_camera.location(), m_camera.lookat(), m_camera.up(), pixelWidth, pixelHeight);
+    m_canvas = new RayCanvas(m_camera.location(), 
+                             m_camera.lookat(), 
+                             m_camera.up(), 
+                             pixelWidth, 
+                             pixelHeight);
 
     // Divide width between threads, the last thread gets the remaindor
     const int THREAD_COUNT = 2;
@@ -106,9 +95,7 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
         threadData->reflectionDepth = 3;
         threadData->world = this;
         pthread_create(&threads[i], 0, pixelTrace, (void*) threadData);
-        //PixelTracer* traceThread = new PixelTracer(startWidth, endWidth, 0, pixelHeight, m_camera.location(), 3, this, m_canvas);
-        //threads.push_back(traceThread);
-        //traceThread->start();
+        
         startWidth += widthPart;
         endWidth += widthPart;
 
@@ -120,7 +107,6 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
     {
         void* status;
         pthread_join(threads[i], &status);
-        //threads[i]->wait(10000);
     }
 
 }

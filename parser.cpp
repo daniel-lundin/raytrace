@@ -1,16 +1,28 @@
-#include "parser.h"
-#include "rayworld.h"
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
+
+#include "parser.h"
+#include "rayworld.h"
+#include "raysphere.h"
+#include "loginterface.h"
 
 using std::vector;
 using std::string;
 using std::cout;
 using std::endl;
 using std::exception;
+using std::runtime_error;
 using std::istringstream;
+using std::ostringstream;
 using std::make_pair;
 
+void throwParseError(int lineno)
+{
+    ostringstream oss;
+    oss << "Parse error at line " << lineno;
+    throw runtime_error(oss.str());
+}
 ParseEntity::ParseEntity(const string& type, ParseEntity* parent)
     : m_parent(parent)
 {
@@ -18,6 +30,8 @@ ParseEntity::ParseEntity(const string& type, ParseEntity* parent)
         m_type = SPHERE;
     else if(type == "camera")    
         m_type = CAMERA;
+    else if(type == "material")
+        m_type = MATERIAL;
     
 }
 
@@ -41,6 +55,14 @@ ParseEntity* ParseEntity::parent()
     return m_parent;
 }
 
+list<ParseEntity*>& ParseEntity::children()
+{
+    return m_children;
+}
+list<pair<int, string> >& ParseEntity::lines() 
+{
+    return m_lines;
+}
 
 void ParseEntity::dump()
 {
@@ -64,14 +86,15 @@ void ParseEntity::dump()
     }
 }
 
-Parser::Parser(RayWorld* world)
-    : m_world(world), ParseEntity("Parser", this)
+Parser::Parser(RayWorld* world, Logger* logger)
+    : m_world(world), ParseEntity("Parser", this), m_logger(logger)
 {
 
 }
 
 bool Parser::parse(istream& stream)
 {
+    m_logger->debug("Starting parse sequence");
     m_current = this;
     int lineno = 0;
     string line;
@@ -121,7 +144,7 @@ void Parser::evaluateEntity(ParseEntity* entity)
             evaluateCameraEntity(entity);
             break;
         default:
-
+            break;
     }
 }
 
@@ -148,7 +171,115 @@ void Parser::dump()
 
 void Parser::evaluateSphereEntity(ParseEntity* entity)
 {
-    e
+    Vector3D pos;
+    float radius; 
+
+    list<pair<int, string> >::iterator it = entity->lines().begin();    
+    list<pair<int, string> >::iterator end = entity->lines().end();    
+
+    while (it != end)
+    {
+        istringstream iss(it->second);
+        string token;
+        iss >> token;
+        if(token == "pos:")
+        {
+            float x, y, z;
+            if((iss >> x).fail())
+                throwParseError(it->first);
+
+            if((iss >> y).fail())
+                throwParseError(it->first);
+
+            if((iss >> z).fail())
+                throwParseError(it->first);
+            
+            pos = Vector3D(x, y, z);
+           
+        }
+        else if (token == "radius:") 
+        {
+            if((iss >> radius).fail())
+                throwParseError(it->first);
+        }
+        ++it;
+    }
+    // For now sphere can only have one children and that is material
+    // Make sure that is the case
+    list<ParseEntity*>& children = entity->children();
+    if(children.size() != 1)
+        throw runtime_error("Sphere missing material definition");
+    ParseEntity* material = *children.begin();
+    if(material->type() != MATERIAL)
+        throw runtime_error("Sphere missing material definition");
+
+    RayMaterial m = evaluateMateriaEntity(material);
+
+    // Note: this method should probably return the sphere instead
+    // in case transformations, intersections etc should ever be implemented
+    ostringstream oss;
+    oss << "Adding sphere at " << pos.x() << ", " <<pos.y() << ", " << pos.z();
+    oss << "Radius: " << radius;
+    m_logger->info(oss.str());
+
+    RaySphere* sphere = new RaySphere(pos, radius, m);
+    m_world->addObject(sphere); 
+}
+
+RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
+{
+    float ambient, diffuse, specular, specpower, reflection;
+    int r,g,b;
+    list<pair<int, string> >::iterator it = entity->lines().begin();    
+    list<pair<int, string> >::iterator end = entity->lines().end();    
+    while(it != end)
+    {
+        istringstream iss(it->second);
+        string token;
+        float value;
+        if((iss >> token).fail())
+            throwParseError(it->first);
+
+        if((iss >> value).fail())
+            throwParseError(it->first);
+
+        if(token == "ambient:")
+            ambient = value;
+        else if(token == "diffuse:") 
+            diffuse = value;
+        else if(token == "specular:")
+            specular = value;
+        else if(token == "specpower:")
+            specular = value;
+        else if(token == "reflection:")
+            reflection = value;
+        else if(token == "color:")
+        {
+            r = value;
+            if((iss >> g).fail())
+                throwParseError(it->first);
+            if((iss >> b).fail())
+                throwParseError(it->first);
+        }
+        else
+            throwParseError(it->first);
+
+        ++it;
+    }
+    ostringstream oss;
+    oss << "Material: " << RayColor(r,g,b).toString();
+    oss << "Amb: " << ambient << " Dif: " << diffuse;
+    oss << "Spec: " << specular << " specPower: " << specpower;
+    oss << "Reflection: " << reflection;
+    m_logger->debug(oss.str());
+
+    return RayMaterial(RayColor(r,g,b), 
+                       ambient, 
+                       diffuse, 
+                       specular, 
+                       specpower,
+                       reflection);
+                
 }
 
 void Parser::evaluateCameraEntity(ParseEntity* entity)

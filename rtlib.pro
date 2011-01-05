@@ -1,10 +1,11 @@
 # -------------------------------------------------
 # Project created by QtCreator 2010-11-26T17:18:23
 # -------------------------------------------------
-QT -= gui
+# QT -= gui
 TARGET = rtlib
-TEMPLATE = lib
-CONFIG += staticlib
+TEMPLATE = app # lib
+
+# CONFIG += staticlib
 SOURCES += rtlib.cpp \
     intersection.cpp \
     pointlight.cpp \
@@ -17,7 +18,10 @@ SOURCES += rtlib.cpp \
     raysphere.cpp \
     raytriangle.cpp \
     rayworld.cpp \
-    vector3d.cpp
+    vector3d.cpp \
+    main.cpp \
+    parser.cpp \
+    bmp.cpp
 HEADERS += rtlib.h \
     intersection.h \
     pointlight.h \
@@ -30,4 +34,7 @@ HEADERS += rtlib.h \
     raysphere.h \
     raytriangle.h \
     rayworld.h \
-    vector3d.h
+    vector3d.h \
+    parser.h \
+    bmp.h
+OTHER_FILES += Makefile.txt

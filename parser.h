@@ -11,10 +11,13 @@ using std::pair;
 using std::istream;
 using std::vector;
 using std::pair;
+
 // foward declarations
 class RayWorld;
+class RayMaterial;
+class Logger;
 
-enum ParseEntities {SPHERE, CAMERA, PLANE};
+enum ParseEntities {SPHERE, CAMERA, PLANE, MATERIAL};
 
 class ParseEntity
 {
@@ -25,7 +28,9 @@ public:
     ParseEntities type();
     virtual void addEntity(ParseEntity* entity);
     virtual ParseEntity* parent();
+    list<ParseEntity*>& children();
     virtual void dump();
+    list<pair<int, string> >& lines(); 
 private:
     ParseEntities m_type;
     ParseEntity* m_parent;    
@@ -36,7 +41,7 @@ private:
 class Parser : public ParseEntity
 {
 public:
-    Parser(RayWorld* world);
+    Parser(RayWorld* world, Logger* logger);
 
     bool parse(istream& stream);
     void evaluateEntity(ParseEntity* entity);
@@ -47,9 +52,11 @@ public:
     void dump();
 private:
     void evaluateSphereEntity(ParseEntity* entity);
+    RayMaterial evaluateMateriaEntity(ParseEntity* entity);
     void evaluateCameraEntity(ParseEntity* entity);
     // members
     RayWorld* m_world;
+    Logger* m_logger;
     vector<ParseEntity*> m_entities;
     ParseEntity* m_current;
 };

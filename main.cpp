@@ -6,6 +6,7 @@
 #include "raysphere.h"
 #include "bmp.h"
 #include "parser.h"
+#include "consolelogger.h"
 
 using namespace std;
 
@@ -30,21 +31,26 @@ int main(int argc, char** argv)
     }
 
 
+    // Parse
     RayWorld r;    
-    Parser p(&r);
-    p.parse(input);
-    p.dump();
-    return 0;
+    ConsoleLogger logger;
+    Parser p(&r, &logger);
+    try
+    {
+        p.parse(input);
+    } catch(exception& e)
+    {
+        cout << "Parse error: " << e.what() << endl;
+    }
     
-    
-
+    // Ray trace
     RayCamera cam;
     cam.setLocation(Vector3D(0,2,0));
-    cam.setLocation(Vector3D(0,0,10));
+    cam.setLookat(Vector3D(0,0,10));
     cam.setUp(Vector3D(0,1,0));    
 
-    int width = 804;
-    int height = 601;
+    int width = 400;
+    int height = 300;
 
     r.render(width, height);
     RayCanvas* canvas = r.canvas();    

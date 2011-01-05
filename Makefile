@@ -13,7 +13,8 @@ OBJECTS = bmp.o \
 	  raysphere.o \
 	  raytriangle.o \
 	  rayworld.o \
-	  vector3d.o
+	  vector3d.o \
+	  consolelogger.o
 
 # Linking
 raytrace : main.cpp $(OBJECTS)
@@ -34,8 +35,8 @@ pointlight.o: pointlight.cpp pointlight.h
 raycamera.o: raycamera.cpp raycamera.h
 	$(CXX) -c raycamera.cpp
 
-raycanvas.o: raycamera.cpp raycamera.h
-	$(CXX) -c raycamera.cpp
+raycanvas.o: raycanvas.cpp raycanvas.h
+	$(CXX) -c raycanvas.cpp
 
 raycolor.o: raycolor.cpp raycolor.h
 	$(CXX) -c raycolor.cpp
@@ -60,3 +61,9 @@ rayworld.o: rayworld.cpp rayworld.h
 
 vector3d.o: vector3d.cpp vector3d.h
 	$(CXX) -c vector3d.cpp
+
+consolelogger.o: consolelogger.cpp consolelogger.h
+	$(CXX) -c consolelogger.cpp
+
+clean:
+	rm *.o

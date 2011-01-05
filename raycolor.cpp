@@ -1,9 +1,11 @@
-#include "raycolor.h"
 #include <utility>
 #include <algorithm>
+#include <sstream>
+#include "raycolor.h"
 
 using std::min;
 using std::max;
+using std::ostringstream;
 
 RayColor::RayColor()
     :m_r(0), m_g(0), m_b(0)
@@ -78,4 +80,9 @@ RayColor& RayColor::operator+=(const RayColor& other)
     this->setB(b() + other.b());
     return *this;
 }
-
+std::string RayColor::toString()
+{
+    ostringstream oss;
+    oss << "(" << m_r << ", " << m_g << ", " << m_b << ")";
+    return oss.str();
+}

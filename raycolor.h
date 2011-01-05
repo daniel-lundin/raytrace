@@ -1,6 +1,8 @@
 #ifndef RAYCOLOR_H
 #define RAYCOLOR_H
 
+#include <string>
+using std::string;
 
 class RayColor
 {
@@ -22,6 +24,7 @@ public:
     RayColor operator+(const RayColor&);
     RayColor& operator+=(const RayColor&);    
 
+    std::string toString();
 private:
     float m_r;
     float m_g;
