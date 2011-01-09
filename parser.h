@@ -5,38 +5,17 @@
 #include <list>
 #include <utility>
 
-using std::list;
-using std::string;
-using std::pair;
+#include "parseentity.h"
+
 using std::istream;
 using std::vector;
-using std::pair;
 
 // foward declarations
 class RayWorld;
 class RayMaterial;
 class Logger;
 
-enum ParseEntities {SPHERE, CAMERA, PLANE, MATERIAL};
 
-class ParseEntity
-{
-public:
-    ParseEntity(const string& type, ParseEntity* parent);
-    void addLine(const string& line, const int lineno);
-    
-    ParseEntities type();
-    virtual void addEntity(ParseEntity* entity);
-    virtual ParseEntity* parent();
-    list<ParseEntity*>& children();
-    virtual void dump();
-    list<pair<int, string> >& lines(); 
-private:
-    ParseEntities m_type;
-    ParseEntity* m_parent;    
-    list<pair<int, string> > m_lines;    
-    list<ParseEntity*> m_children;
-};
 
 class Parser : public ParseEntity
 {

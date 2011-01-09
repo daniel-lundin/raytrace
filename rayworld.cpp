@@ -75,7 +75,7 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
                              pixelHeight);
 
     // Divide width between threads, the last thread gets the remaindor
-    const int THREAD_COUNT = 1;
+    const int THREAD_COUNT = 2;
     pthread_t threads[THREAD_COUNT];
     int  widthPart = pixelWidth / THREAD_COUNT;
     int leftOvers = pixelWidth % THREAD_COUNT;

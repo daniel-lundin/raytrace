@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <sys/time.h>
+
 #include "rayworld.h"
 #include "raycamera.h"
 #include "raysphere.h"
@@ -70,8 +72,14 @@ int main(int argc, char** argv)
         return 6;
     }
     
+    struct timeval t1, t2;
+    gettimeofday(&t1, 0);
     r.render(width, height);
+    gettimeofday(&t2, 0);
     RayCanvas* canvas = r.canvas();    
+    long usecdiff = (t2.tv_sec*1000000 + t2.tv_usec) - (t1.tv_sec*1000000 + t1.tv_usec);
+    cout << "Render took: " << usecdiff/1000 << " msecs " << endl;
+
     BMP bmp(width, height);
 
     for(int x=0;x<width;++x)

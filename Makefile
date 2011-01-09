@@ -3,6 +3,7 @@ CXX = g++
 OBJECTS = bmp.o \
 	  intersection.o \
 	  parser.o \
+	  parseentity.o \
 	  pointlight.o \
 	  raycamera.o \
 	  raycanvas.o \
@@ -28,6 +29,9 @@ intersection.o: intersection.cpp intersection.h
 
 parser.o: parser.cpp parser.h
 	$(CXX) -c parser.cpp
+
+parseentity.o: parseentity.cpp parser.h
+	$(CXX) -c parseentity.cpp
 
 pointlight.o: pointlight.cpp pointlight.h
 	$(CXX) -c pointlight.cpp
