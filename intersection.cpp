@@ -8,17 +8,17 @@ Intersection::Intersection()
 }
 
 
-const Vector3D& Intersection::point()
+const Vector3D& Intersection::point() const
 {
     return m_point;
 }
 
-const Vector3D& Intersection::normal()
+const Vector3D& Intersection::normal() const
 {
     return m_normal;
 }
 
-const RayColor Intersection::color()
+const RayColor Intersection::color() const
 {
     return m_color;
 }
@@ -28,7 +28,7 @@ RayObject* Intersection::object()
     return m_object;
 }
 
-bool Intersection::insideHit()
+bool Intersection::insideHit() const
 {
     return m_insideHit;
 }

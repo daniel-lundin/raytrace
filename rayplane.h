@@ -1,10 +1,11 @@
 #ifndef RAYPLANE_H
 #define RAYPLANE_H
+#include <vector>
+
 #include "raycolor.h"
 #include "vector3d.h"
 #include "rayobject.h"
 #include "raymaterial.h"
-#include <vector>
 
 class RayPlane : public RayObject
 {

@@ -10,11 +10,11 @@ class Intersection
 public:
     Intersection();    
 
-    const Vector3D& point();
-    const Vector3D& normal();
-    const RayColor color();
+    const Vector3D& point() const;
+    const Vector3D& normal() const;
+    const RayColor color() const;
     RayObject* object();
-    bool insideHit();
+    bool insideHit() const;
 
     void setPoint(const Vector3D& point);
     void setNormal(const Vector3D& normal);

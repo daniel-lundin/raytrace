@@ -7,6 +7,8 @@
 #include "raycolor.h"
 #include "rayplane.h"
 
+// TODO: Turn this class into an interface so that BMP-class can implement the interface. 
+// This way we can avoid an extra round of copy when writing to file for example.
 class RayCanvas
 {
 public:

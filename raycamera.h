@@ -8,9 +8,9 @@ public:
     RayCamera();
     RayCamera(const Vector3D& location, const Vector3D& lookat, const Vector3D& up);
 
-    const Vector3D& location();
-    const Vector3D& up();
-    const Vector3D& lookat();
+    const Vector3D& location() const;
+    const Vector3D& up() const;
+    const Vector3D& lookat() const;
 
     void setLocation(const Vector3D&);
     void setUp(const Vector3D&);

@@ -6,7 +6,7 @@ PointLight::PointLight(const Vector3D& position)
 }
 
 
-const Vector3D& PointLight::position()
+const Vector3D& PointLight::position() const
 {
     return m_position;
 }

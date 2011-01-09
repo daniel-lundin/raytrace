@@ -6,7 +6,7 @@ class PointLight
 {
 public:
     PointLight(const Vector3D& position);
-    const Vector3D& position();
+    const Vector3D& position() const;
 private:
     Vector3D m_position;
 

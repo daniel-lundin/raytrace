@@ -1,12 +1,13 @@
 #ifndef RAYSPHERE_H
 #define RAYSPHERE_H
+#include <vector>
+
 #include "rayobject.h"
 #include "intersection.h"
 #include "vector3d.h"
 #include "RayColor.h"
 #include "raymaterial.h"
 
-#include <vector>
 
 class RaySphere : public RayObject
 {

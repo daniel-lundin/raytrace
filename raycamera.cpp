@@ -9,17 +9,17 @@ RayCamera::RayCamera(const Vector3D& location, const Vector3D& lookat, const Vec
 {
 }
 
-const Vector3D& RayCamera::location()
+const Vector3D& RayCamera::location() const
 {
     return m_location;
 }
 
-const Vector3D& RayCamera::up()
+const Vector3D& RayCamera::up() const
 {
     return m_up;
 }
 
-const Vector3D& RayCamera::lookat()
+const Vector3D& RayCamera::lookat() const
 {
     return m_lookat;
 }
