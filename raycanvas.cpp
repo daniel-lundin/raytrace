@@ -7,7 +7,7 @@ using namespace std;
 RayCanvas::RayCanvas(const Vector3D& origin, const Vector3D& lookat, const Vector3D& up, int pixWidth, int pixHeight)
     : m_origin(origin), m_pixWidth(pixWidth), m_pixHeight(pixHeight)
 {
-    float d = 2.0;
+    float d = 1.5;
     Vector3D direction = lookat - m_origin;
     direction.normalize();
 

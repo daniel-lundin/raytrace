@@ -1,3 +1,6 @@
+#include <iostream>
+#include <pthread.h>
+
 #include "rayworld.h"
 #include "raysphere.h"
 #include "rayobject.h"
@@ -6,8 +9,6 @@
 #include "raycolor.h"
 #include "raymaterial.h"
 #include "raytriangle.h"
-#include <iostream>
-#include <pthread.h>
 using namespace std;
 
 #define SMALL_NUMBER 0.01
@@ -236,15 +237,12 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
     // This is the lightning model    
     diffuse *= intersection.object()->material().diffuse();    
     specular *= intersection.object()->material().specular();
-    //diffuse = 1;
 
     RayColor pixColor;
     pixColor = hitColor.scaled(hitMaterial.ambient());
     pixColor += hitColor.scaled(diffuse).scaled(1-reflection);
     pixColor += reflectionColor.scaled(reflection);
     pixColor += RayColor(255,255,255).scaled(specular);
-    //cout << hitMaterial;
-    //pixColor = pixColor.scaled(1 - refractionRate) + refractionColor.scaled(refractionRate);
     return pixColor;
 }
 

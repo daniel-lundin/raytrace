@@ -1,0 +1,45 @@
+.camera
+    location: 0 27 0
+    lookat: 0 2 15
+    up: 0 1 0
+next
+
+.sphere
+    pos: -4 3 20
+    radius: 3
+    .material        
+        color: 92 95 132
+        ambient: 0.6
+        diffuse: 0.8
+        specular: 0.3
+        specpower: 30
+        reflection: 0.3
+    next
+next
+		
+.sphere
+    pos: 4 3 17
+    radius: 3
+    .material
+        color: 60 120 70
+        ambient: 0.3
+        diffuse: 0.3
+        specular: 0.4
+        specpower: 34
+        reflection: 0.5
+    next
+next
+
+.plane
+    pos: 0 0 0
+    normal: 0 1 0
+    .material
+        color: 100 140 150
+        ambient: 0.4
+        diffuse: 0.6
+        specular: 0.3
+        specpower: 40
+        reflection: 0.4
+    next
+next
+

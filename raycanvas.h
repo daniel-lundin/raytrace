@@ -2,10 +2,11 @@
 #define RAYCANVAS_H
 
 #include <vector>
-#include "vector3d.h"
 
+#include "vector3d.h"
 #include "raycolor.h"
 #include "rayplane.h"
+
 class RayCanvas
 {
 public:
@@ -18,11 +19,9 @@ private:
     int m_pixWidth;
     int m_pixHeight;
 
-
     std::vector<RayColor> m_pixelColors;
 
     Vector3D m_upperLeft;
-    //RayPlane m_focalPlane;
     Vector3D m_origin;
     Vector3D m_side;
     Vector3D m_up;

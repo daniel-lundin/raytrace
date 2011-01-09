@@ -1,15 +1,11 @@
 #ifndef RAYWORLD_H
 #define RAYWORLD_H
+#include <vector>
+
 #include "rayobject.h"
-#include <list>
 #include "raycanvas.h"
 #include "raycamera.h"
 #include "pointlight.h"
-#include <vector>
-
-using std::list;
-
-class RayWorld;
 
 
 class RayWorld
