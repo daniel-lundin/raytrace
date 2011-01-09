@@ -6,6 +6,7 @@
 #include "rayworld.h"
 #include "raysphere.h"
 #include "loginterface.h"
+#include "raycamera.h"
 
 using std::vector;
 using std::string;
@@ -17,10 +18,10 @@ using std::istringstream;
 using std::ostringstream;
 using std::make_pair;
 
-void throwParseError(int lineno)
+void throwParseError(int lineno, const std::string& str = "")
 {
     ostringstream oss;
-    oss << "Parse error at line " << lineno;
+    oss << "Parse error at line " << lineno << ": " << str;
     throw runtime_error(oss.str());
 }
 ParseEntity::ParseEntity(const string& type, ParseEntity* parent)
@@ -32,6 +33,8 @@ ParseEntity::ParseEntity(const string& type, ParseEntity* parent)
         m_type = CAMERA;
     else if(type == "material")
         m_type = MATERIAL;
+    else if(type == "plane")
+        m_type = PLANE;
     
 }
 
@@ -143,6 +146,9 @@ void Parser::evaluateEntity(ParseEntity* entity)
         case CAMERA:
             evaluateCameraEntity(entity);
             break;
+        case PLANE:
+            evaluatePlaneEntity(entity);
+            break;
         default:
             break;
     }
@@ -226,6 +232,52 @@ void Parser::evaluateSphereEntity(ParseEntity* entity)
     m_world->addObject(sphere); 
 }
 
+void Parser::evaluatePlaneEntity(ParseEntity* entity)
+{
+    Vector3D pos, normal;
+
+    list<pair<int, string> >::iterator it = entity->lines().begin();    
+    list<pair<int, string> >::iterator end = entity->lines().end();    
+
+    while (it != end)
+    {
+        istringstream iss(it->second);
+        string token;
+
+        iss >> token;
+
+        float x, y, z;
+        if((iss >> x).fail())
+            throwParseError(it->first);
+
+        if((iss >> y).fail())
+            throwParseError(it->first);
+
+        if((iss >> z).fail())
+            throwParseError(it->first);
+        if(token == "pos:")
+            pos = Vector3D(x,y,z);
+        else if(token == "normal:")
+            normal = Vector3D(x,y,z);
+        else
+            throwParseError(it->first); 
+        ++it;
+    }
+
+    // For now sphere can only have one children and that is material
+    // Make sure that is the case
+    list<ParseEntity*>& children = entity->children();
+    if(children.size() != 1)
+        throw runtime_error("Sphere missing material definition");
+    ParseEntity* material = *children.begin();
+    if(material->type() != MATERIAL)
+        throw runtime_error("Sphere missing material definition");
+
+    RayMaterial m = evaluateMateriaEntity(material);
+
+    m_world->addObject(new RayPlane(pos, normal, m));
+}
+
 RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
 {
     float ambient, diffuse, specular, specpower, reflection;
@@ -250,7 +302,7 @@ RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
         else if(token == "specular:")
             specular = value;
         else if(token == "specpower:")
-            specular = value;
+            specpower = value;
         else if(token == "reflection:")
             reflection = value;
         else if(token == "color:")
@@ -284,5 +336,51 @@ RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
 
 void Parser::evaluateCameraEntity(ParseEntity* entity)
 {
+    m_logger->info("Parsing camera");
+    Vector3D location, lookat, up;
+    bool locSet, lookSet, upSet;
+    locSet = lookSet = upSet = false;
     
+    list<pair<int, string> >::iterator it = entity->lines().begin();    
+    list<pair<int, string> >::iterator end = entity->lines().end();    
+    while(it != end)
+    {
+        string token;
+        float x,y,z;
+        istringstream iss(it->second);
+        iss >> token;
+
+        if((iss >> x).fail())
+            throwParseError(it->first);
+
+        if((iss >> y).fail())
+            throwParseError(it->first);
+
+        if((iss >> z).fail())
+            throwParseError(it->first);
+            
+        Vector3D v(x, y, z);
+        if(token == "location:")
+        {
+            location = v;
+            locSet = true;
+        }
+        else if(token == "lookat:")
+        {
+            lookat = v;
+            lookSet = true;
+        }
+        else if(token == "up:")
+        {
+            up = v;
+            upSet = true;
+        }
+        else
+            throwParseError(it->first);
+
+        ++it;
+    }
+    if(!(locSet && lookSet && upSet))
+       throwParseError(-1, "Missing attribute for camera definition"); 
+    m_world->setCamera(RayCamera(location, lookat, up));
 }

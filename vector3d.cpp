@@ -101,3 +101,9 @@ const Vector3D Vector3D::operator-(const Vector3D& other) const
 {
     return Vector3D(x() - other.x(), y() - other.y(), z() - other.z());
 }
+
+std::ostream& operator<<(std::ostream& os, const Vector3D& v)
+{
+    os << "(" << v.x() << ", " << v.y() << ", " << v.z() << ")";
+    return os;
+}

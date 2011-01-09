@@ -7,7 +7,6 @@ BMP::BMP(const int width, const int height)
     : m_width(width), m_height(height)
 {
     m_pixelArray = new pixel24[width*height];
-    cout << "Pixel array size: " << width*height << endl;
 }
 
 BMP::~BMP()

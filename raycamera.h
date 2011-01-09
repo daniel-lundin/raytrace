@@ -6,6 +6,7 @@ class RayCamera
 {
 public:
     RayCamera();
+    RayCamera(const Vector3D& location, const Vector3D& lookat, const Vector3D& up);
 
     const Vector3D& location();
     const Vector3D& up();

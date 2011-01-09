@@ -1,5 +1,6 @@
 #include "raymaterial.h"
 
+using std::endl;
 RayMaterial::RayMaterial(const RayColor& color,
                          float ambient,
                          float diffuse,
@@ -57,3 +58,18 @@ const RayColor& RayMaterial::color() const
 {
     return m_color;
 }
+
+std::ostream& operator<<(std::ostream& os, const RayMaterial& mat)
+{
+    os << " .. RayMaterial .. " << endl;    
+    os << "Color: " << mat.m_color.toString() << endl;
+        
+    os << "Ambient: " << mat.m_ambient << endl;
+    os << "Diffuse: " << mat.m_diffuse << endl;
+    os << "specular: " << mat.m_specular << endl;
+    os << "specPower:" << mat.m_specPower << endl;
+    os << "reflection: " << mat.m_reflection << endl;
+    os << "refractionRate: " << mat.m_refractionRate << endl;
+    return os;
+}
+

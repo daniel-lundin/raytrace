@@ -24,7 +24,7 @@ public:
     RayColor operator+(const RayColor&);
     RayColor& operator+=(const RayColor&);    
 
-    std::string toString();
+    std::string toString() const;
 private:
     float m_r;
     float m_g;

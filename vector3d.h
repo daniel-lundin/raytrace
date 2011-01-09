@@ -1,5 +1,6 @@
 #ifndef VECTOR3D_H
 #define VECTOR3D_H
+#include <iostream>
 
 class Vector3D
 {
@@ -34,10 +35,12 @@ public:
     Vector3D normalized() const;
 
 
+    friend std::ostream& operator<<(std::ostream& os, const Vector3D&);
 private:
     float m_x;
     float m_y;
     float m_z;
 };
 
+std::ostream& operator<<(std::ostream& os, const Vector3D&);
 #endif // VECTOR3D_H

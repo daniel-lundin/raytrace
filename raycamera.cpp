@@ -4,6 +4,11 @@ RayCamera::RayCamera()
 {
 }
 
+RayCamera::RayCamera(const Vector3D& location, const Vector3D& lookat, const Vector3D& up)
+    : m_location(location), m_lookat(lookat), m_up(up)
+{
+}
+
 const Vector3D& RayCamera::location()
 {
     return m_location;

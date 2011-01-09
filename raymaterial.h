@@ -1,5 +1,6 @@
 #ifndef RAYMATERIAL_H
 #define RAYMATERIAL_H
+#include <iostream>
 #include "raycolor.h"
 
 class RayMaterial
@@ -20,6 +21,9 @@ public:
     float refractionRate() const;
     float brytningsIndex() const;
     const RayColor& color() const;
+
+
+    friend std::ostream& operator<<(std::ostream& os, const RayMaterial&);
 private:
     float m_ambient;
     float m_diffuse;
@@ -31,4 +35,5 @@ private:
     RayColor m_color;
 };
 
+std::ostream& operator<<(std::ostream& os, const RayMaterial&);
 #endif // RAYMATERIAL_H

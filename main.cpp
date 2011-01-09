@@ -7,17 +7,18 @@
 #include "bmp.h"
 #include "parser.h"
 #include "consolelogger.h"
+#include "nologger.h"
 
 using namespace std;
 
 void printUsage(const string& appname)
 {
-    cout << "Usage: " << appname << " raytrace-file output" << endl;
+    cout << "Usage: " << appname << " raytrace-file width height output" << endl;
 }
 
 int main(int argc, char** argv)
 {   
-    if(argc != 2)
+    if(argc != 5)
     {
         printUsage(argv[0]);
         return 1;
@@ -26,32 +27,49 @@ int main(int argc, char** argv)
     ifstream input(argv[1]);
     if(!input)
     {
-        cout << "Bad file" << endl;
+        cout << "Error opening input file: " << argv[1] << endl;
         return 2;
     }
 
 
+    // Read width height
+    int width, height;
+    istringstream iss(argv[2]);
+    if((iss >> width).fail())
+    {
+        cout << "Error parsing width: " << argv[2] << endl;
+        return 3;
+    }
+    iss.clear();
+    iss.str(argv[3]);
+    if((iss >> height).fail())
+    {
+        cout << "Error parsing height: " << argv[3] << endl;
+        return 4;
+    }
+    
+    // Open output file
+    ofstream file(argv[4]);
+    if(!file)
+    {
+        cout << "Error opening output file: " << argv[4] << endl;
+        return 5;
+    }
+
     // Parse
     RayWorld r;    
-    ConsoleLogger logger;
+    NoLogger logger;
     Parser p(&r, &logger);
     try
     {
         p.parse(input);
-    } catch(exception& e)
+    } 
+    catch(exception& e)
     {
         cout << "Parse error: " << e.what() << endl;
+        return 6;
     }
     
-    // Ray trace
-    RayCamera cam;
-    cam.setLocation(Vector3D(0,2,0));
-    cam.setLookat(Vector3D(0,0,10));
-    cam.setUp(Vector3D(0,1,0));    
-
-    int width = 400;
-    int height = 300;
-
     r.render(width, height);
     RayCanvas* canvas = r.canvas();    
     BMP bmp(width, height);
@@ -64,9 +82,7 @@ int main(int argc, char** argv)
             bmp.setPixelAt(x, y, col.r(), col.g(), col.b());
         }
     }
-    ofstream file("out.bmp");
     file << bmp;
-
 
     return 0;
 }

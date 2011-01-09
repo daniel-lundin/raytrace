@@ -34,8 +34,9 @@ void* pixelTrace(void* threadData)
             // "Fire of" a ray through point x, y and collect hits
             std::vector<Vector3D> rays;
             Vector3D ray = d->canvas->vectorThrough(x, y);
-
-            RayColor pixelColor = d->world->rayTrace(d->origin, ray, d->reflectionDepth);
+            RayColor pixelColor = d->world->rayTrace(d->origin, 
+                                                     ray, 
+                                                     d->reflectionDepth);
             d->canvas->setColor(x, y, pixelColor);
         }
     }
@@ -44,8 +45,8 @@ void* pixelTrace(void* threadData)
 
 RayWorld::RayWorld()
 {    
-    m_lights.push_back(new PointLight(Vector3D(0,80,0)));
-
+    m_lights.push_back(new PointLight(Vector3D(0,8,0)));
+    
     m_canvas = 0;
 }
 
@@ -66,7 +67,6 @@ void RayWorld::setCamera(const RayCamera& camera)
 
 void RayWorld::render(int pixelWidth, int pixelHeight)
 {
-    cout << "Objs: " << m_objects.size() << endl;
     delete m_canvas;
     m_canvas = new RayCanvas(m_camera.location(), 
                              m_camera.lookat(), 
@@ -75,7 +75,7 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
                              pixelHeight);
 
     // Divide width between threads, the last thread gets the remaindor
-    const int THREAD_COUNT = 2;
+    const int THREAD_COUNT = 1;
     pthread_t threads[THREAD_COUNT];
     int  widthPart = pixelWidth / THREAD_COUNT;
     int leftOvers = pixelWidth % THREAD_COUNT;
@@ -111,10 +111,13 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
 
 }
 
-RayColor RayWorld::rayTrace(const Vector3D& start, const Vector3D& direction, int depth)
+RayColor RayWorld::rayTrace(const Vector3D& start, 
+                            const Vector3D& direction, 
+                            int depth)
 {
     if(depth < 0)
         return RayColor(0,0,0);
+
     // Find closest intersection
     Intersection intersection;
     if(!closestIntersection(start, direction, intersection))
@@ -124,27 +127,30 @@ RayColor RayWorld::rayTrace(const Vector3D& start, const Vector3D& direction, in
     RayColor hitColor = intersection.color();
     RayObject* hitObject = intersection.object();
     RayMaterial hitMaterial = hitObject->material();
+
+    // Loop all light sources, accumulate diffuse and specular
     float diffuse = 0;
     float specular = 0;
 
-    // Loop all light sources
     std::vector<PointLight*>::iterator lightIt = m_lights.begin();
     std::vector<PointLight*>::iterator lightEnd = m_lights.end();
     while(lightIt != lightEnd)
     {
-
         Vector3D lightRay = (*lightIt)->position() - intersection.point();
         lightRay.normalize();
-        // Calculate diffuse ligtning by dotting normal of intersection point with ray from light source
+        // Calculate diffuse ligtning by dotting 
+        // normal of intersection point with ray from light source
         float currDiffuse = lightRay.dotProduct(intersection.normal());
         // Stay positive!
         currDiffuse = max(currDiffuse, 0.f);
 
         int shadow = 1; // Shadow coefficent, 0 indicating point is in shadow
         // Calculate distance from intersction point to light source
-        float disPointToLight = Vector3D(intersection.point() - (*lightIt)->position()).lengthSquared();
+        float disPointToLight = Vector3D(intersection.point() - 
+                                (*lightIt)->position()).lengthSquared();
 
-        // Loop over all objects in scene to see if anything is blocking the ray from light
+        // Loop over all objects in scene to see if 
+        // anything is blocking the ray from light
         std::vector<RayObject*>::iterator objIt = m_objects.begin();
         std::vector<RayObject*>::iterator objEnd = m_objects.end();
 
@@ -157,11 +163,14 @@ RayColor RayWorld::rayTrace(const Vector3D& start, const Vector3D& direction, in
             }
 
             std::vector<Intersection> lightIntersections;
-            if((*objIt)->intersects(intersection.point(), lightRay, lightIntersections))
+            if((*objIt)->intersects(intersection.point(), 
+                                    lightRay, 
+                                    lightIntersections))
             {
                 for(int i=0;i<lightIntersections.size();++i)
                 {
-                    float distance = Vector3D(lightIntersections[i].point() - (*lightIt)->position()).lengthSquared();
+                    float distance = Vector3D(lightIntersections[i].point() - 
+                                     (*lightIt)->position()).lengthSquared();
                     if(distance < disPointToLight)
                     {                        
                         shadow = 0;
@@ -173,9 +182,10 @@ RayColor RayWorld::rayTrace(const Vector3D& start, const Vector3D& direction, in
 
         // Sum diffuse shading from all light sources
         diffuse = min(diffuse + currDiffuse*shadow, 1.f);
-
         // Add specular lightning
-        Vector3D reflectionVector = direction - intersection.normal()*direction.dotProduct(intersection.normal())*2;
+        Vector3D reflectionVector = direction - 
+                                    intersection.normal()*
+                                    direction.dotProduct(intersection.normal())*2;
         reflectionVector.normalize();
 
         float specularShading = reflectionVector.dotProduct(lightRay);
@@ -188,9 +198,14 @@ RayColor RayWorld::rayTrace(const Vector3D& start, const Vector3D& direction, in
 
 
     // Calculate reflection
-    Vector3D reflectionVector = direction - intersection.normal()*intersection.normal().dotProduct(direction)*2;
+    Vector3D reflectionVector = direction - 
+                                intersection.normal()*
+                                intersection.normal().dotProduct(direction)*2;
     reflectionVector.normalize();
-    RayColor reflectionColor = rayTrace(intersection.point()+(reflectionVector*SMALL_NUMBER), reflectionVector, depth - 1);
+    RayColor reflectionColor = rayTrace(intersection.point() +
+                                        (reflectionVector*SMALL_NUMBER), 
+                                        reflectionVector, 
+                                        depth - 1);
     float reflection = hitMaterial.reflection();
 
     // Calculate refraction( not quite working ! )
@@ -210,22 +225,25 @@ RayColor RayWorld::rayTrace(const Vector3D& start, const Vector3D& direction, in
         float c2 = 1 - n*n*(1-c1*c1);
         if(c2 > 0)
         {
-            Vector3D refractionVector = (direction*n) + refractionNormal*(n*cosIn - sqrt(cosOut));
+            Vector3D refractionVector = (direction*n) + 
+                                        refractionNormal*(n*cosIn - sqrt(cosOut));
             refractionVector.normalize();
-            refractionColor = rayTrace(intersection.point() + refractionVector*0.01, refractionVector, depth - 1);
+            refractionColor = rayTrace(intersection.point() + 
+                              refractionVector*0.01, refractionVector, depth - 1);
         }
 
     }
-
     // This is the lightning model    
     diffuse *= intersection.object()->material().diffuse();    
     specular *= intersection.object()->material().specular();
     //diffuse = 1;
+
     RayColor pixColor;
     pixColor = hitColor.scaled(hitMaterial.ambient());
     pixColor += hitColor.scaled(diffuse).scaled(1-reflection);
     pixColor += reflectionColor.scaled(reflection);
     pixColor += RayColor(255,255,255).scaled(specular);
+    //cout << hitMaterial;
     //pixColor = pixColor.scaled(1 - refractionRate) + refractionColor.scaled(refractionRate);
     return pixColor;
 }

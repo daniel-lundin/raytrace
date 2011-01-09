@@ -80,7 +80,7 @@ RayColor& RayColor::operator+=(const RayColor& other)
     this->setB(b() + other.b());
     return *this;
 }
-std::string RayColor::toString()
+std::string RayColor::toString() const
 {
     ostringstream oss;
     oss << "(" << m_r << ", " << m_g << ", " << m_b << ")";
