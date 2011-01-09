@@ -46,14 +46,17 @@ void* pixelTrace(void* threadData)
 
 RayWorld::RayWorld()
 {    
-    m_lights.push_back(new PointLight(Vector3D(0,8,0)));
-    
     m_canvas = 0;
 }
 
 void RayWorld::addObject(RayObject* object)
 {
     m_objects.push_back(object);
+}
+
+void RayWorld::addLightSource(PointLight* light) 
+{
+    m_lights.push_back(light);
 }
 
 void RayWorld::clearScene()

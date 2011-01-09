@@ -85,6 +85,9 @@ void Parser::evaluateEntity(ParseEntity* entity)
         case PLANE:
             evaluatePlaneEntity(entity);
             break;
+        case LIGHT:
+            evaluateLightEntity(entity);
+            break;
         default:
             break;
     }
@@ -212,6 +215,42 @@ void Parser::evaluatePlaneEntity(ParseEntity* entity)
     RayMaterial m = evaluateMateriaEntity(material);
 
     m_world->addObject(new RayPlane(pos, normal, m));
+}
+
+
+void Parser::evaluateLightEntity(ParseEntity* entity)
+{
+    Vector3D position;
+
+    list<pair<int, string> >::iterator it = entity->lines().begin();    
+    list<pair<int, string> >::iterator end = entity->lines().end();    
+    while(it != end)
+    {
+        istringstream iss(it->second);
+        string token;
+        if((iss >> token).fail())
+            throwParseError(it->first);
+        if(token == "pos:")
+        {
+            float x,y,z;
+             
+            if((iss >> x).fail())
+                throwParseError(it->first);
+
+            if((iss >> y).fail())
+                throwParseError(it->first);
+
+            if((iss >> z).fail())
+                throwParseError(it->first);
+            position = Vector3D(x,y,z);
+        }
+        else
+        {
+            throwParseError(it->first);
+        }
+        ++it;
+    }
+    m_world->addLightSource(new PointLight(position));
 }
 
 RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)

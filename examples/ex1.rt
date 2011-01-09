@@ -4,6 +4,10 @@
     up: 0 1 0
 next
 
+.light
+    pos: 0 300 0
+next
+
 .sphere
     pos: -4 3 20
     radius: 3

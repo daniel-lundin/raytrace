@@ -15,6 +15,7 @@ public:
     void render(int pixelWidth, int pixelHeight);
 
     void addObject(RayObject*);
+    void addLightSource(PointLight*);
     void clearScene();
 
     void setCamera(const RayCamera& camera);
