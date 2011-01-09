@@ -1,1 +1,4 @@
 *.o
+Session.vim
+*.bmp
+TAGS
