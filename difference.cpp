@@ -1,26 +1,11 @@
-#include "difference.h"
 #include <iterator>
 #include <algorithm>
+#include "difference.h"
+#include "utils.h"
 
 using std::copy;
 using std::back_inserter;
 
-// Function object for sorting intersections based on the distance from some point p
-struct distanceSorter
-{
-    distanceSorter(const Vector3D& p) : m_p(p) {}
-    bool operator()(const Intersection& first, const Intersection& second)
-    {
-        float d1 = Vector3D(first.point() - m_p).lengthSquared();
-        float d2 = Vector3D(second.point() - m_p).lengthSquared();
-        return d1 < d2;
-    }
-    const Vector3D& m_p;
-};
-bool isCloser(const Intersection& first, const Intersection& second)
-{
-
-}
 Difference::Difference(RayObject* first, RayObject* second)
     : m_first(first), m_second(second)
 {
@@ -34,24 +19,59 @@ bool Difference::intersects(const Vector3D& start,
 {
     std::vector<Intersection> firstIsecs;
     // First check for intersections for the first object
-    if(m_first->intersects(start, direction, firstIsecs))
+    if(!m_first->intersects(start, direction, firstIsecs))
+        return false;
+    
+    std::vector<Intersection> secondIsecs;
+    // Check for intersection on the other object, if it doesn't exist
+    // Return the intersections for the first one only
+    if(!m_second->intersects(start, direction, secondIsecs))
     {
-        std::vector<Intersection> secondIsecs;
-        // Check for intersection on the other object, if it doesn't exist
-        // Return the intersections for the first one only
-        if(!m_second->intersects(start, direction, secondIsecs))
-        {
-            std::copy(firstIsecs.begin(), firstIsecs.end(), back_inserter(isecs));
-            return true;
-        }
-        // The ray intersects both objects
-        // Sort the intersections by distance from start.
-        std::vector<Intersection> allISecs;
-        copy(firstIsecs.begin(), firstIsecs.end(), back_inserter(allISecs));
-        copy(secondIsecs.begin(), secondIsecs.end(), back_inserter(allISecs));
+        std::copy(firstIsecs.begin(), firstIsecs.end(), back_inserter(isecs));
+        return true;
+    }
 
-                                 
-    } 
-    return false;
+    // Gather all intersection in one vector and sort them by distance
+    // from point start
+    std::vector<Intersection> allISecs;
+    copy(firstIsecs.begin(), firstIsecs.end(), back_inserter(allISecs));
+    copy(secondIsecs.begin(), secondIsecs.end(), back_inserter(allISecs));
+    DistanceSorter sorter(start);
+    std::sort(allISecs.begin(), allISecs.end(), sorter); 
+
+    // Iterate through all intersection, while keeping track
+    // of whether we're inside any of them
+    bool insideFirst = false;
+    bool insideSecond = false;
+    std::vector<Intersection>::iterator it = allISecs.begin();
+    std::vector<Intersection>::iterator end = allISecs.end();
+    for(;it != end;++it)
+    {
+        if(it->object() == m_first)
+        {
+            if(!insideSecond)
+            {
+                isecs.push_back(*it);
+            }
+            insideFirst != insideFirst;
+        }
+        else if(it->object() == m_second)
+        {
+            if(insideFirst)
+            {
+                if(insideSecond)
+                {
+                    // We're inside the first one and no longer inside the second(counting this hit)
+                    // so we have an intersection
+                    Intersection i(*it);
+                    i.setObject(m_first);
+                    i.setNormal(i.normal()*-1);
+                    isecs.push_back(i);
+                }
+            }
+            insideSecond = !insideSecond;
+        }
+    }
+    return isecs.size() > 0;
 }
 
