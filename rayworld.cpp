@@ -9,6 +9,8 @@
 #include "raycolor.h"
 #include "raymaterial.h"
 #include "raytriangle.h"
+#include "utils.h"
+
 using namespace std;
 
 #define SMALL_NUMBER 0.01
@@ -120,13 +122,13 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
                             int depth)
 {
     if(depth < 0)
-        return RayColor(0,0,0);
+        return RayColor(0, 0, 0);
 
     // Find closest intersection
     Intersection intersection;
     if(!closestIntersection(start, direction, intersection))
     {
-        return RayColor(0,0,0);
+        return RayColor(55,55,55);
     }
     RayColor hitColor = intersection.color();
     RayObject* hitObject = intersection.object();
@@ -260,12 +262,7 @@ bool RayWorld::closestIntersection(const Vector3D& start, const Vector3D& direct
         std::vector<Intersection> localIntersections;
         if((*objIt)->intersects(start, direction, localIntersections))
         {
-            while(localIntersections.size())
-            {
-                intersections.push_back(*localIntersections.begin());
-                localIntersections.erase(localIntersections.begin());
-            }
-
+            std::copy(localIntersections.begin(), localIntersections.end(), back_inserter(intersections));
         }
         ++objIt;
     }
@@ -274,23 +271,9 @@ bool RayWorld::closestIntersection(const Vector3D& start, const Vector3D& direct
         return false;
     }
 
-    // Find the closest intersection
+    DistanceSorter distanceSorter(start);
+    std::sort(intersections.begin(), intersections.end(), distanceSorter);
     closest = *intersections.begin();
-    intersections.erase(intersections.begin());
-    float closestDistance = Vector3D(start - closest.point()).lengthSquared();
-
-    std::vector<Intersection>::iterator it = intersections.begin();
-    std::vector<Intersection>::iterator end = intersections.end();
-    while(it != end)
-    {
-        float currentDistance = (start - it->point()).lengthSquared();
-        if(currentDistance < closestDistance)
-        {
-            closest = *it;
-            closestDistance = currentDistance;
-        }
-        ++it;
-    }
     return true;
 }
 

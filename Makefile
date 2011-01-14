@@ -15,7 +15,9 @@ OBJECTS = bmp.o \
 	  raytriangle.o \
 	  rayworld.o \
 	  vector3d.o \
-	  consolelogger.o
+	  difference.o \
+	  consolelogger.o \
+	  utils.o
 
 # Linking
 raytrace : main.cpp $(OBJECTS)
@@ -66,8 +68,13 @@ rayworld.o: rayworld.cpp rayworld.h
 vector3d.o: vector3d.cpp vector3d.h
 	$(CXX) -c vector3d.cpp
 
+difference.o: difference.cpp difference.h
+	$(CXX) -c difference.cpp
+
 consolelogger.o: consolelogger.cpp consolelogger.h
 	$(CXX) -c consolelogger.cpp
 
+utils.o: utils.cpp utils.h
+	$(CXX) -c utils.cpp
 clean:
 	rm *.o
