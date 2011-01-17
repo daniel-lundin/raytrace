@@ -3,8 +3,8 @@
 #include <math.h>
 
 
-RayCylinder::RayCylinder(float radius)
-    : m_radius(radius)
+RayCylinder::RayCylinder(float radius, float length)
+    : m_radius(radius), m_length(length)
 {
 }
 
@@ -32,23 +32,24 @@ bool RayCylinder::intersects(const Vector3D& start,
     float t1 = (-b + sqrt(root))/(2*a);
     float t2 = (-b - sqrt(root))/(2*a);
 
-    if(t1 > 0)
+    float ts[] = {t1, t2};
+    for(int i=0;i<2;++i)
     {
+        if(ts[i] < 0)
+            continue;
+        Vector3D point = start + direction*ts[i];
+        if((point.z() > m_length/2) || (point.z() < -m_length/2))
+            continue;
+        
         Intersection i;
         i.setMaterial(RayMaterial(RayColor(255,0,255), 0.5, 0.5, 0, 0, 0));
         i.setObject(this);
-        i.setPoint(start + direction*t1);
-        i.setNormal(i.point() - Vector3D(0, 0, i.point().z()));
+        i.setPoint(point);
+        Vector3D normal = i.point() - Vector3D(0, 0, i.point().z());
+        i.setInsideHit(normal.dotProduct(direction) > 0);
+        i.setNormal(normal.normalized());
         isecs.push_back(i);
-    }
-    if(t2 > 0)
-    {
-        Intersection i;
-        i.setMaterial(RayMaterial(RayColor(255,0,255), 0.5, 0.5, 0, 0, 0));
-        i.setObject(this);
-        i.setPoint(start + direction*t2);
-        i.setNormal(i.point() - Vector3D(0, 0, i.point().z()));
-        isecs.push_back(i);
+
     }
     return isecs.size() > 0;
 

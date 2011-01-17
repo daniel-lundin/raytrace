@@ -1,11 +1,11 @@
 .camera
-    location: 0 7 0
-    lookat: 0 0 10
+    location: -10 30 -10
+    lookat: 0 0 0
     up: 0 1 0
 next
 
 .light
-    pos: 0 300 0
+    pos: 10 30 0
 next
 
 .sphere

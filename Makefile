@@ -18,6 +18,7 @@ OBJECTS = bmp.o \
 	  rayworld.o \
 	  vector3d.o \
 	  difference.o \
+	  translation.o \
 	  consolelogger.o \
 	  utils.o
 
@@ -75,6 +76,9 @@ vector3d.o: vector3d.cpp vector3d.h
 
 difference.o: difference.cpp difference.h
 	$(CXX) $(CFLAGS) -c difference.cpp
+
+translation.o: translation.cpp translation.h
+	$(CXX) $(CFLAGS) -c translation.cpp
 
 consolelogger.o: consolelogger.cpp consolelogger.h
 	$(CXX) $(CFLAGS) -c consolelogger.cpp
