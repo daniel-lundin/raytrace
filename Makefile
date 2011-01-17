@@ -13,6 +13,7 @@ OBJECTS = bmp.o \
           raymaterial.o \
 	  rayplane.o \
 	  raysphere.o \
+	  raycylinder.o \
 	  raytriangle.o \
 	  rayworld.o \
 	  vector3d.o \
@@ -59,6 +60,9 @@ rayplane.o: rayplane.cpp rayplane.h
 
 raysphere.o: raysphere.cpp raysphere.h
 	$(CXX) $(CFLAGS) -c raysphere.cpp
+
+raycylinder.o: raycylinder.cpp raycylinder.h
+	$(CXX) $(CFLAGS) -c raycylinder.cpp
 
 raytriangle.o: raytriangle.cpp raytriangle.h
 	$(CXX) $(CFLAGS) -c raytriangle.cpp
