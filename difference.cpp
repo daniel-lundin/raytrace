@@ -18,11 +18,11 @@ bool Difference::intersects(const Vector3D& start,
                             std::vector<Intersection>& isecs)
 {
     std::vector<Intersection> firstIsecs;
+    std::vector<Intersection> secondIsecs;
     // First check for intersections for the first object
     if(!m_first->intersects(start, direction, firstIsecs))
         return false;
     
-    std::vector<Intersection> secondIsecs;
     // Check for intersection on the other object, if it doesn't exist
     // Return the intersections for the first one only
     if(!m_second->intersects(start, direction, secondIsecs))
@@ -61,7 +61,8 @@ bool Difference::intersects(const Vector3D& start,
             {
                 if(insideSecond)
                 {
-                    // We're inside the first one and no longer inside the second(counting this hit)
+                    // We're inside the first one 
+                    // and no longer inside the second(counting this hit)
                     // so we have an intersection
                     Intersection i(*it);
                     i.setObject(m_first);

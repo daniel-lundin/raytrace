@@ -18,14 +18,14 @@ const Vector3D& Intersection::normal() const
     return m_normal;
 }
 
-const RayColor Intersection::color() const
-{
-    return m_color;
-}
-
 RayObject* Intersection::object()
 {
     return m_object;
+}
+
+RayMaterial Intersection::material() const
+{
+    return m_material;
 }
 
 bool Intersection::insideHit() const
@@ -43,14 +43,14 @@ void Intersection::setNormal(const Vector3D& normal)
     m_normal = normal;
 }
 
-void Intersection::setColor(const RayColor& color)
-{
-    m_color = color;
-}
-
 void Intersection::setObject(RayObject* object)
 {
     m_object = object;
+}
+
+void Intersection::setMaterial(const RayMaterial& m)
+{
+    m_material = m;
 }
 
 void Intersection::setInsideHit(bool b)

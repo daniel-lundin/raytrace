@@ -12,7 +12,8 @@ public:
                 float specular,
                 float specPower,
                 float reflection);
-
+    RayMaterial();
+    
     float ambient() const;
     float diffuse() const;
     float specular() const;

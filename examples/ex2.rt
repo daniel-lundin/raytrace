@@ -1,8 +1,8 @@
 # Comments look like this
 # This is an examples of why loops should be cool
 .camera
-    location: 0 8 4
-    lookat: 0 2 20
+    location: 0 0 4
+    lookat: 0 -2 20
     up: 0 1 0
 next
 

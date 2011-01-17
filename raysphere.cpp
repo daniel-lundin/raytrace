@@ -1,5 +1,7 @@
+#include <cstdlib>
 #include "raysphere.h"
 #include "math.h"
+#include "utils.h"
 
 RaySphere::RaySphere(const Vector3D& center, float radius, const RayMaterial& material)
     : m_center(center), m_radius(radius), m_material(material)
@@ -36,15 +38,17 @@ bool RaySphere::intersects(const Vector3D& start, const Vector3D& direction, std
         rand();
 
         normal.normalize();
-        // Check if it's a hit from inside by doting direction with normal, if negative, hit is from inside(used for refractions)
-        //inter.setInsideHit(Vector3D::dotProduct(normal, direction) < 0);
-        if(normal.dotProduct(direction) > 0)
-            continue;
+        // Check if it's a hit from inside by doting direction with normal, if negative, 
+        // hit is from inside(used for refractions)
+        inter.setInsideHit(normal.dotProduct(direction) < 0);
+        //if(normal.dotProduct(direction) > 0)
+        //    continue;
 
+        // Try some random normal displacments
+        //inter.setNormal(randomDisplaceVector(normal, 0.01));
         inter.setNormal(normal);
 
-        // Color
-        inter.setColor(m_material.color());
+        inter.setMaterial(m_material);
         intersections.push_back(inter);
     }
 

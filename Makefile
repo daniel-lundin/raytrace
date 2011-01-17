@@ -1,4 +1,5 @@
 CXX = g++
+CFLAGS = 
 
 OBJECTS = bmp.o \
 	  intersection.o \
@@ -21,60 +22,60 @@ OBJECTS = bmp.o \
 
 # Linking
 raytrace : main.cpp $(OBJECTS)
-	$(CXX) main.cpp $(OBJECTS) -o raytrace
+	$(CXX) $(CFLAGS) main.cpp $(OBJECTS) -o raytrace
 
 bmp.o: bmp.cpp bmp.h
-	$(CXX) -c bmp.cpp
+	$(CXX) $(CFLAGS) -c bmp.cpp
 
 intersection.o: intersection.cpp intersection.h
-	$(CXX) -c intersection.cpp
+	$(CXX) $(CFLAGS) -c intersection.cpp
 
 parser.o: parser.cpp parser.h
-	$(CXX) -c parser.cpp
+	$(CXX) $(CFLAGS) -c parser.cpp
 
 parseentity.o: parseentity.cpp parser.h
-	$(CXX) -c parseentity.cpp
+	$(CXX) $(CFLAGS) -c parseentity.cpp
 
 pointlight.o: pointlight.cpp pointlight.h
-	$(CXX) -c pointlight.cpp
+	$(CXX) $(CFLAGS) -c pointlight.cpp
 
 raycamera.o: raycamera.cpp raycamera.h
-	$(CXX) -c raycamera.cpp
+	$(CXX) $(CFLAGS) -c raycamera.cpp
 
 raycanvas.o: raycanvas.cpp raycanvas.h
-	$(CXX) -c raycanvas.cpp
+	$(CXX) $(CFLAGS) -c raycanvas.cpp
 
 raycolor.o: raycolor.cpp raycolor.h
-	$(CXX) -c raycolor.cpp
+	$(CXX) $(CFLAGS) -c raycolor.cpp
 
 rayobject.o: rayobject.h 
-	$(CXX) -c rayobject.cpp
+	$(CXX) $(CFLAGS) -c rayobject.cpp
 
 raymaterial.o: raymaterial.cpp raymaterial.h
-	$(CXX) -c raymaterial.cpp
+	$(CXX) $(CFLAGS) -c raymaterial.cpp
 
 rayplane.o: rayplane.cpp rayplane.h
-	$(CXX) -c rayplane.cpp
+	$(CXX) $(CFLAGS) -c rayplane.cpp
 
 raysphere.o: raysphere.cpp raysphere.h
-	$(CXX) -c raysphere.cpp
+	$(CXX) $(CFLAGS) -c raysphere.cpp
 
 raytriangle.o: raytriangle.cpp raytriangle.h
-	$(CXX) -c raytriangle.cpp
+	$(CXX) $(CFLAGS) -c raytriangle.cpp
 
 rayworld.o: rayworld.cpp rayworld.h
-	$(CXX) -c rayworld.cpp
+	$(CXX) $(CFLAGS) -c rayworld.cpp
 
 vector3d.o: vector3d.cpp vector3d.h
-	$(CXX) -c vector3d.cpp
+	$(CXX) $(CFLAGS) -c vector3d.cpp
 
 difference.o: difference.cpp difference.h
-	$(CXX) -c difference.cpp
+	$(CXX) $(CFLAGS) -c difference.cpp
 
 consolelogger.o: consolelogger.cpp consolelogger.h
-	$(CXX) -c consolelogger.cpp
+	$(CXX) $(CFLAGS) -c consolelogger.cpp
 
 utils.o: utils.cpp utils.h
-	$(CXX) -c utils.cpp
+	$(CXX) $(CFLAGS) -c utils.cpp
 clean:
 	rm *.o

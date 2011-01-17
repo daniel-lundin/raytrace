@@ -1,4 +1,5 @@
 #include "rayplane.h"
+#include "utils.h"
 
 RayPlane::RayPlane(const Vector3D& point, const Vector3D& up, const RayMaterial& material)
     : m_point(point), m_up(up), m_material(material)
@@ -19,13 +20,10 @@ bool RayPlane::intersects(const Vector3D& start, const Vector3D& direction, std:
     Intersection i;
     i.setObject(this);
     i.setPoint(start + direction*l);
-    i.setNormal(m_up);
+    i.setNormal(sinify(m_up, i.point()));
     i.setInsideHit(direction.dotProduct(m_up) < 0);
 
-    //int colorFlag = ((int)i.point().x() + (int)i.point().z()) % 2 == 0;
-
-    //i.setColor(RayColor(colorFlag*255,colorFlag*255,colorFlag*255));
-    i.setColor(m_material.color());
+    i.setMaterial(m_material);
     intersections.push_back(i);
     return true;
 }

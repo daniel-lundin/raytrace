@@ -44,13 +44,13 @@ bool Parser::parse(istream& stream)
             istringstream iss(line);
             string token;
             iss >> token;
-	        if (token[0] == '.')
+	    if (token[0] == '.')
             {
                 string entityType = token.substr(1, -1);    			
                 ParseEntity* ent = new ParseEntity(entityType, m_current);
                 m_current->addEntity(ent);
                 m_current = ent;
-	        }
+	    }
             else if(token == "next")
             {
                 m_current = m_current->parent();
@@ -151,15 +151,19 @@ void Parser::evaluateSphereEntity(ParseEntity* entity)
     }
     // For now sphere can only have one children and that is material
     // Make sure that is the case
+    RayMaterial m;
     list<ParseEntity*>& children = entity->children();
-    if(children.size() != 1)
-        throw runtime_error("Sphere missing material definition");
-    ParseEntity* material = *children.begin();
-    if(material->type() != MATERIAL)
-        throw runtime_error("Sphere missing material definition");
 
-    RayMaterial m = evaluateMateriaEntity(material);
+    if(children.size() == 1)
+    {
+        
+        ParseEntity* material = *children.begin();
+        if(material->type() != MATERIAL)
+            throw runtime_error("Sphere has unknown child.");
+        m = evaluateMateriaEntity(material);
+    }
 
+    
     // Note: this method should probably return the sphere instead
     // in case transformations, intersections etc should ever be implemented
     ostringstream oss;

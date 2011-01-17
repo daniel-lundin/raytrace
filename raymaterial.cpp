@@ -17,6 +17,15 @@ RayMaterial::RayMaterial(const RayColor& color,
 }
 
 
+RayMaterial::RayMaterial()
+    : m_color(0,0,0),
+      m_ambient(0),
+      m_diffuse(0),
+      m_specular(0),
+      m_specPower(0),
+      m_reflection(0)
+{
+}
 
 float RayMaterial::ambient() const
 {

@@ -46,7 +46,7 @@ bool RayTriangle::intersects(const Vector3D& start, const Vector3D& direction, s
         return false;
     i.setObject(this);
     i.setNormal(m_plane->m_up);
-    i.setColor(RayColor(255,0,255));   
+    i.setMaterial(m_material);   
     intersections.push_back(i);
     return true;
 }

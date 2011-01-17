@@ -2,6 +2,7 @@
 #define INTERSECTION_H
 #include "vector3d.h"
 #include "raycolor.h"
+#include "raymaterial.h"
 // Forward declarations
 class RayObject;
 
@@ -12,20 +13,20 @@ public:
 
     const Vector3D& point() const;
     const Vector3D& normal() const;
-    const RayColor color() const;
     RayObject* object();
+    RayMaterial material() const;
     bool insideHit() const;
 
     void setPoint(const Vector3D& point);
     void setNormal(const Vector3D& normal);
-    void setColor(const RayColor& color);
     void setObject(RayObject*);
     void setInsideHit(bool b);
+    void setMaterial(const RayMaterial&);
 private:
     RayObject* m_object;
+    RayMaterial m_material;
     Vector3D m_point;
     Vector3D m_normal;
-    RayColor m_color;
     bool m_insideHit;
 };
 
