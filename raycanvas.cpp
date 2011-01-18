@@ -27,7 +27,7 @@ Vector3D RayCanvas::vectorThrough(int pixelRow, int pixelCol)
 
     Vector3D canvasPoint = m_upperLeft - 
                            m_side*((float)pixelRow/m_pixWidth)*2 - 
-                           m_up*((float)pixelCol/m_pixWidth)*2;
+                           m_up*((float)pixelCol/m_pixHeight)*2;
 
     Vector3D v = canvasPoint - m_origin;
     v.normalize();
