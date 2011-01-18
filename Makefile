@@ -19,6 +19,7 @@ OBJECTS = bmp.o \
 	  vector3d.o \
 	  difference.o \
 	  translation.o \
+	  rotation.o \
 	  consolelogger.o \
 	  utils.o
 
@@ -79,6 +80,9 @@ difference.o: difference.cpp difference.h
 
 translation.o: translation.cpp translation.h
 	$(CXX) $(CFLAGS) -c translation.cpp
+
+rotation.o: rotation.cpp rotation.h
+	$(CXX) $(CFLAGS) -c rotation.cpp
 
 consolelogger.o: consolelogger.cpp consolelogger.h
 	$(CXX) $(CFLAGS) -c consolelogger.cpp
