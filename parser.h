@@ -31,6 +31,7 @@ public:
     void dump();
 private:
     void evaluateSphereEntity(ParseEntity* entity);
+    void evaluateCylinderEntity(ParseEntity* entity);
     void evaluatePlaneEntity(ParseEntity* entity);
     void evaluateLightEntity(ParseEntity* entity);
     RayMaterial evaluateMateriaEntity(ParseEntity* entity);

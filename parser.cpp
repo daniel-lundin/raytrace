@@ -5,6 +5,9 @@
 #include "parser.h"
 #include "rayworld.h"
 #include "raysphere.h"
+#include "raycylinder.h"
+#include "translation.h"
+#include "rotation.h"
 #include "loginterface.h"
 #include "raycamera.h"
 
@@ -18,10 +21,10 @@ using std::istringstream;
 using std::ostringstream;
 using std::make_pair;
 
-void throwParseError(int lineno, const std::string& str = "")
+void throwParseError(int lineno, const std::string& str = "no info")
 {
     ostringstream oss;
-    oss << "Parse error at line " << lineno << ": " << str;
+    oss << "Syntax error at line " << lineno << ": " << str;
     throw runtime_error(oss.str());
 }
 
@@ -35,7 +38,7 @@ bool Parser::parse(istream& stream)
 {
     m_logger->debug("Starting parse sequence");
     m_current = this;
-    int lineno = 0;
+    int lineno = 1;
     string line;
     while(getline(stream, line))
     {
@@ -78,6 +81,9 @@ void Parser::evaluateEntity(ParseEntity* entity)
     {
         case SPHERE:
             evaluateSphereEntity(entity);
+            break;
+        case CYLINDER:
+            evaluateCylinderEntity(entity);
             break;
         case CAMERA:
             evaluateCameraEntity(entity);
@@ -173,6 +179,78 @@ void Parser::evaluateSphereEntity(ParseEntity* entity)
 
     RaySphere* sphere = new RaySphere(pos, radius, m);
     m_world->addObject(sphere); 
+}
+
+void Parser::evaluateCylinderEntity(ParseEntity* entity)
+{
+    Vector3D pos;
+    float xrot, yrot, zrot;
+    float radius, length;
+
+    list<pair<int, string> >::iterator it = entity->lines().begin();    
+    list<pair<int, string> >::iterator end = entity->lines().end();    
+
+    for(;it!=end;++it)
+    {
+
+        istringstream iss(it->second);
+        string token;
+        iss >> token;
+        if(token == "pos:")
+        {
+            float x, y, z;
+            if((iss >> x).fail())
+                throwParseError(it->first);
+
+            if((iss >> y).fail())
+                throwParseError(it->first);
+
+            if((iss >> z).fail())
+                throwParseError(it->first);
+            
+            pos = Vector3D(x, y, z);
+           
+        }
+        else if(token == "rot:")
+        {
+            float x, y, z;
+            if((iss >> x).fail())
+                throwParseError(it->first);
+
+            if((iss >> y).fail())
+                throwParseError(it->first);
+
+            if((iss >> z).fail())
+                throwParseError(it->first);
+            xrot = x;
+        } 
+        else if(token == "radius:")
+        {
+            if((iss >> radius).fail())
+                throwParseError(it->first);
+        }
+        else if(token == "length:")
+        {
+            if((iss >> length).fail())
+                throwParseError(it->first);
+        }
+    }
+
+    RayMaterial m;
+    list<ParseEntity*>& children = entity->children();
+
+    if(children.size() == 1)
+    {
+        ParseEntity* material = *children.begin();
+        if(material->type() != MATERIAL)
+            throw runtime_error("Sphere has unknown child.");
+        m = evaluateMateriaEntity(material);
+    }
+
+    RayObject* o = new RayCylinder(radius, length, m);
+    o = new Rotation(o, xrot, 0, 0);
+    o = new Translation(o, pos.x(), pos.y(), pos.z());
+    m_world->addObject(o);
 }
 
 void Parser::evaluatePlaneEntity(ParseEntity* entity)

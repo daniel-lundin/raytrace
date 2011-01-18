@@ -10,6 +10,8 @@ ParseEntity::ParseEntity(const string& type, ParseEntity* parent)
 {
     if(type == "sphere")
         m_type = SPHERE;
+    else if(type == "cylinder")
+        m_type = CYLINDER;
     else if(type == "camera")    
         m_type = CAMERA;
     else if(type == "material")
