@@ -9,6 +9,9 @@
 #include "raycolor.h"
 #include "raymaterial.h"
 #include "raytriangle.h"
+#include "raycylinder.h"
+#include "translation.h"
+#include "rotation.h"
 #include "difference.h"
 #include "utils.h"
 
@@ -195,32 +198,6 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
                                         reflectionVector, 
                                         depth - 1);
     float reflection = hitMaterial.reflection();
-
-    // Calculate refraction( not quite working ! )
-    RayColor refractionColor(0,0,0);
-    if(intersection.material().refractionRate() > 0)
-    {
-        Vector3D refractionNormal = intersection.normal();
-
-        float n = intersection.material().brytningsIndex();
-        float cosIn = - refractionNormal.dotProduct(direction);
-        float cosOut = 1.0f - n*n*(1.0f - cosIn*cosIn);
-        if(cosOut > 0)
-        {
-
-        }
-        float c1 = -direction.dotProduct(refractionNormal);
-        float c2 = 1 - n*n*(1-c1*c1);
-        if(c2 > 0)
-        {
-            Vector3D refractionVector = (direction*n) + 
-                                        refractionNormal*(n*cosIn - sqrt(cosOut));
-            refractionVector.normalize();
-            refractionColor = rayTrace(intersection.point() + 
-                              refractionVector*0.01, refractionVector, depth - 1);
-        }
-
-    }
     // This is the lightning model    
     diffuse *= intersection.material().diffuse();    
     specular *= intersection.material().specular();

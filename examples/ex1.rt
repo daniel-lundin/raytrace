@@ -1,11 +1,11 @@
 .camera
-    location: -10 30 -10
-    lookat: 0 0 0
+    location: 0 19 0 
+    lookat: 0 0 15
     up: 0 1 0
 next
 
 .light
-    pos: 10 30 0
+    pos: -30 30 0
 next
 
 .sphere
@@ -21,42 +21,31 @@ next
     next
 next
 		
-.sphere
-    pos: 4 3 17
-    radius: 3
+.cylinder
+    pos: 0 0 15
+    rot: 0.21 0 0
+    radius: 0.5
+    length: 13
     .material
-        color: 60 40 70
+        color: 160 40 70
         ambient: 0.1
-        diffuse: 0.3
+        diffuse: 0.9
         specular: 0.8
         specpower: 34
-        reflection: 0
-    next
-next
-
-.sphere
-    pos: 2 2 26
-    radius: 2
-    .material
-        color: 70 60 70
-        ambient: 0.1
-        diffuse: 0.3
-        specular: 0.8
-        specpower: 34
-        reflection: 0
+        reflection: 0.3
     next
 next
 
 .plane
-    pos: 0 0 0
+    pos: 0 -2 0
     normal: 0 1 0
     .material
-        color: 90 40 50
+        color: 90 40 150
         ambient: 0.4
         diffuse: 0.6
         specular: 1
         specpower: 40
-        reflection: 0
+        reflection: 0.3
     next
 next
 

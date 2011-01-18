@@ -68,7 +68,8 @@ int main(int argc, char** argv)
     } 
     catch(exception& e)
     {
-        cout << "Parse error: " << e.what() << endl;
+        cout << e.what() << endl;
+        cout << "Aborting parser..." << endl;
         return 6;
     }
     

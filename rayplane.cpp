@@ -20,7 +20,7 @@ bool RayPlane::intersects(const Vector3D& start, const Vector3D& direction, std:
     Intersection i;
     i.setObject(this);
     i.setPoint(start + direction*l);
-    i.setNormal(sinify(m_up, i.point()));
+    i.setNormal(m_up);
     i.setInsideHit(direction.dotProduct(m_up) < 0);
 
     i.setMaterial(m_material);
