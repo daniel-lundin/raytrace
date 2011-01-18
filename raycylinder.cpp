@@ -3,8 +3,8 @@
 #include <math.h>
 
 
-RayCylinder::RayCylinder(float radius, float length)
-    : m_radius(radius), m_length(length)
+RayCylinder::RayCylinder(float radius, float length, const RayMaterial& m)
+    : m_radius(radius), m_length(length), m_material(m)
 {
 }
 
@@ -42,14 +42,13 @@ bool RayCylinder::intersects(const Vector3D& start,
             continue;
         
         Intersection i;
-        i.setMaterial(RayMaterial(RayColor(255,0,255), 0.5, 0.5, 0, 0, 0));
+        i.setMaterial(m_material);
         i.setObject(this);
         i.setPoint(point);
         Vector3D normal = i.point() - Vector3D(0, 0, i.point().z());
         i.setInsideHit(normal.dotProduct(direction) > 0);
         i.setNormal(normal.normalized());
         isecs.push_back(i);
-
     }
     return isecs.size() > 0;
 
