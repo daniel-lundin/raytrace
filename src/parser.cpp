@@ -223,6 +223,8 @@ void Parser::evaluateCylinderEntity(ParseEntity* entity)
             if((iss >> z).fail())
                 throwParseError(it->first);
             xrot = x;
+            yrot = y;
+            zrot = z;
         } 
         else if(token == "radius:")
         {
@@ -248,7 +250,7 @@ void Parser::evaluateCylinderEntity(ParseEntity* entity)
     }
 
     RayObject* o = new RayCylinder(radius, length, m);
-    o = new Rotation(o, xrot, 0, 0);
+    o = new Rotation(o, xrot, yrot, zrot);
     o = new Translation(o, pos.x(), pos.y(), pos.z());
     m_world->addObject(o);
 }

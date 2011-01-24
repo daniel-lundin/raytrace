@@ -23,7 +23,7 @@ bool RayCylinder::intersects(const Vector3D& start,
 
     float a = pow(direction.x(), 2) + pow(direction.y(), 2);
     float b = 2*start.x()*direction.x() + 2*start.y()*direction.y();
-    float c = pow(start.x(), 2) + pow(start.y(), 2) - m_radius;
+    float c = pow(start.x(), 2) + pow(start.y(), 2) - pow(m_radius,2);
 
     float root = pow(b,2) - 4*a*c;
     if(root < 0)

@@ -2,7 +2,7 @@
 #include "utils.h"
 
 RayPlane::RayPlane(const Vector3D& point, const Vector3D& up, const RayMaterial& material)
-    : m_point(point), m_up(up), m_material(material)
+    : m_up(up), m_point(point), m_material(material)
 {
     m_up.normalize();
 }

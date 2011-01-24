@@ -85,14 +85,13 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
                              pixelHeight);
 
     // Divide width between threads, the last thread gets the remaindor
-    const int THREAD_COUNT = 2;
-    pthread_t threads[THREAD_COUNT];
-    int  widthPart = pixelWidth / THREAD_COUNT;
-    int leftOvers = pixelWidth % THREAD_COUNT;
+    pthread_t threads[NUM_THREADS];
+    int  widthPart = pixelWidth / NUM_THREADS;
+    int leftOvers = pixelWidth % NUM_THREADS;
     int startWidth = 0;
     int endWidth = startWidth + widthPart;
 
-    for(int i=0;i<THREAD_COUNT;++i)
+    for(int i=0;i<NUM_THREADS;++i)
     {        
         // Note: Thread is responsible for cleaning up this
         ThreadTraceData* threadData = new ThreadTraceData;
@@ -109,11 +108,11 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
         startWidth += widthPart;
         endWidth += widthPart;
 
-        if(i == THREAD_COUNT - 2)
+        if(i == NUM_THREADS - 2)
             endWidth += leftOvers;
     }
 
-    for(int i=0;i<THREAD_COUNT;++i)
+    for(int i=0;i<NUM_THREADS;++i)
     {
         void* status;
         pthread_join(threads[i], &status);

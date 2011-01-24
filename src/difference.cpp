@@ -53,7 +53,7 @@ bool Difference::intersects(const Vector3D& start,
             {
                 isecs.push_back(*it);
             }
-            insideFirst != insideFirst;
+            insideFirst = !insideFirst;
         }
         else if(it->object() == m_second)
         {

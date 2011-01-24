@@ -7,9 +7,9 @@ using namespace std;
 
 struct pixel24
 {
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;	
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;	
 };
 
 

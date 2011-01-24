@@ -26,6 +26,7 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const RayMaterial&);
 private:
+    RayColor m_color;
     float m_ambient;
     float m_diffuse;
     float m_specular;
@@ -33,7 +34,6 @@ private:
     float m_reflection;
     float m_refractionRate;
     float m_brytningsIndex;
-    RayColor m_color;
 };
 
 std::ostream& operator<<(std::ostream& os, const RayMaterial&);
