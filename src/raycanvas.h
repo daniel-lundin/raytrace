@@ -15,19 +15,19 @@ public:
     RayCanvas(const Vector3D& origin, const Vector3D& lookat, const Vector3D& up, int pixWidth, int pixHeight);
     Vector3D vectorThrough(int pixelRow, int pixelCol);
 
-    void setColor(int x, int y, const RayColor&);
-    RayColor color(int x, int y);
+    void setColor(unsigned int x, unsigned int y, const RayColor&);
+    RayColor color(unsigned int x, unsigned int y);
 private:   
-    int m_pixWidth;
-    int m_pixHeight;
 
     std::vector<RayColor> m_pixelColors;
 
-    Vector3D m_upperLeft;
     Vector3D m_origin;
+    Vector3D m_upperLeft;
     Vector3D m_side;
     Vector3D m_up;
 
+    int m_pixWidth;
+    int m_pixHeight;
 };
 
 

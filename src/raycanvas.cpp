@@ -34,9 +34,9 @@ Vector3D RayCanvas::vectorThrough(int pixelRow, int pixelCol)
     return v;
 }
 
-void RayCanvas::setColor(int x, int y, const RayColor& color)
+void RayCanvas::setColor(unsigned int x, unsigned int y, const RayColor& color)
 {
-    int index = y*m_pixWidth + x;
+    unsigned int index = y*m_pixWidth + x;
     if (index > m_pixelColors.size()-1)
     {
         return;
@@ -44,9 +44,9 @@ void RayCanvas::setColor(int x, int y, const RayColor& color)
     m_pixelColors[index] = color;
 }
 
-RayColor RayCanvas::color(int x, int y)
+RayColor RayCanvas::color(unsigned int x, unsigned int y)
 {
-    int index = y*m_pixWidth + x;
+    unsigned int index = y*m_pixWidth + x;
     if (index > m_pixelColors.size()-1)
     {
         return RayColor();

@@ -17,8 +17,8 @@ public:
     void setLookat(const Vector3D&);
 private:
     Vector3D m_location;
-    Vector3D m_up;
     Vector3D m_lookat;
+    Vector3D m_up;
 
 };
 
