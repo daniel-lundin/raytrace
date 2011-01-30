@@ -6,6 +6,7 @@
 #include "rayworld.h"
 #include "raysphere.h"
 #include "raycylinder.h"
+#include "raybox.h"
 #include "translation.h"
 #include "rotation.h"
 #include "loginterface.h"
@@ -29,7 +30,7 @@ void throwParseError(int lineno, const std::string& str = "no info")
 }
 
 Parser::Parser(RayWorld* world, Logger* logger)
-    : m_world(world), ParseEntity("Parser", this), m_logger(logger)
+    : ParseEntity("Parser", this), m_world(world), m_logger(logger)
 {
 
 }
@@ -87,6 +88,9 @@ void Parser::evaluateEntity(ParseEntity* entity)
             break;
         case CAMERA:
             evaluateCameraEntity(entity);
+            break;
+        case BOX:
+            evaluateBoxEntity(entity);
             break;
         case PLANE:
             evaluatePlaneEntity(entity);
@@ -184,8 +188,11 @@ void Parser::evaluateSphereEntity(ParseEntity* entity)
 void Parser::evaluateCylinderEntity(ParseEntity* entity)
 {
     Vector3D pos;
-    float xrot, yrot, zrot;
-    float radius, length;
+    float xrot = 0;
+	float yrot = 0;
+	float zrot = 0;
+    float radius = 0;
+	float length = 0;
 
     list<pair<int, string> >::iterator it = entity->lines().begin();    
     list<pair<int, string> >::iterator end = entity->lines().end();    
@@ -255,6 +262,65 @@ void Parser::evaluateCylinderEntity(ParseEntity* entity)
     m_world->addObject(o);
 }
 
+void Parser::evaluateBoxEntity(ParseEntity* entity)
+{
+    Vector3D pos;
+	Vector3D rot;
+    float xsize = 0;
+	float ysize = 0;
+	float zsize = 0;
+
+    list<pair<int, string> >::iterator it = entity->lines().begin();    
+    list<pair<int, string> >::iterator end = entity->lines().end();    
+
+    while (it != end)
+    {
+        istringstream iss(it->second);
+        string token;
+        
+        iss >> token;
+        float x,y,z;
+
+        if((iss >> x).fail())
+            throwParseError(it->first);
+
+        if((iss >> y).fail())
+            throwParseError(it->first);
+
+        if((iss >> z).fail())
+            throwParseError(it->first);
+        if(token == "size:")
+        {
+            xsize = x;
+            ysize = y;
+            zsize = z;
+        }
+        else if(token == "pos:")
+        {
+            pos = Vector3D(x,y,z);
+        }
+		else if(token == "rot:")
+		{
+			rot = Vector3D(x, y, z);
+		}
+        ++it;
+    }
+
+    RayMaterial m;
+    list<ParseEntity*>& children = entity->children();
+
+    if(children.size() == 1)
+    {
+        ParseEntity* material = *children.begin();
+        if(material->type() != MATERIAL)
+            throw runtime_error("Sphere has unknown child.");
+        m = evaluateMateriaEntity(material);
+    }
+    RayObject* o = new RayBox(xsize, ysize, zsize, m);
+	o = new Rotation(o, rot.x(), rot.y(), rot.z());
+    o = new Translation(o, pos.x(), pos.y(), pos.z());
+    m_world->addObject(o);
+}
 void Parser::evaluatePlaneEntity(ParseEntity* entity)
 {
     Vector3D pos, normal;
@@ -339,8 +405,14 @@ void Parser::evaluateLightEntity(ParseEntity* entity)
 
 RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
 {
-    float ambient, diffuse, specular, specpower, reflection;
-    int r,g,b;
+    float ambient 		= 0;
+	float diffuse 		= 0;
+	float specular 		= 0;
+	float specpower 	= 0;
+	float reflection 	= 0;
+    int r = 0;
+	int g = 0;
+	int b = 0;
     list<pair<int, string> >::iterator it = entity->lines().begin();    
     list<pair<int, string> >::iterator end = entity->lines().end();    
     while(it != end)

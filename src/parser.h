@@ -34,13 +34,14 @@ private:
     void evaluateCylinderEntity(ParseEntity* entity);
     void evaluatePlaneEntity(ParseEntity* entity);
     void evaluateLightEntity(ParseEntity* entity);
+    void evaluateBoxEntity(ParseEntity* entity);
     RayMaterial evaluateMateriaEntity(ParseEntity* entity);
     void evaluateCameraEntity(ParseEntity* entity);
     // members
     RayWorld* m_world;
+    ParseEntity* m_current;
     Logger* m_logger;
     vector<ParseEntity*> m_entities;
-    ParseEntity* m_current;
 };
 
 #endif // PARSER_H

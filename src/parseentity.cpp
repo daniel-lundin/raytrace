@@ -20,7 +20,8 @@ ParseEntity::ParseEntity(const string& type, ParseEntity* parent)
         m_type = PLANE;
     else if(type == "light")
         m_type = LIGHT;
-    
+    else if(type == "box")
+        m_type = BOX;
 }
 
 void ParseEntity::addLine(const string& line, const int lineno)
