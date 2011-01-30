@@ -4,7 +4,7 @@
 
 
 RayCylinder::RayCylinder(float radius, float length, const RayMaterial& m)
-    : m_radius(radius), m_length(length), m_material(m)
+    : m_material(m), m_radius(radius), m_length(length) 
 {
 }
 

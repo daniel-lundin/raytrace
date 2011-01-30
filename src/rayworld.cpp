@@ -10,15 +10,20 @@
 #include "raymaterial.h"
 #include "raytriangle.h"
 #include "raycylinder.h"
+#include "raybox.h"
 #include "translation.h"
 #include "rotation.h"
 #include "difference.h"
 #include "utils.h"
+#include "progress.h"
 
 using namespace std;
 
 #define SMALL_NUMBER 0.01
-
+RayMaterial testMaterial1()
+{
+    return RayMaterial(RayColor(130,90,90), 0,0.8,0.3,30,0);
+}
 struct ThreadTraceData
 {
     int xStart;
@@ -29,6 +34,7 @@ struct ThreadTraceData
     int reflectionDepth;
     RayWorld* world;
     RayCanvas* canvas;
+    Progress* progress;
 };
 
 void* pixelTrace(void* threadData)
@@ -45,12 +51,15 @@ void* pixelTrace(void* threadData)
                                                      ray, 
                                                      d->reflectionDepth);
             d->canvas->setColor(x, y, pixelColor);
+            d->progress->tick();
         }
     }
     delete d;
+	return 0;
 }
 
-RayWorld::RayWorld()
+RayWorld::RayWorld(Progress* progress)
+    : m_progress(progress)
 {    
     m_canvas = 0;
 }
@@ -103,6 +112,8 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
         threadData->origin = m_camera.location();
         threadData->reflectionDepth = 3;
         threadData->world = this;
+        threadData->progress = m_progress;
+
         pthread_create(&threads[i], 0, pixelTrace, (void*) threadData);
         
         startWidth += widthPart;
@@ -134,7 +145,6 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
         return RayColor(0,0,0);
     }
     RayColor hitColor = intersection.material().color();
-    RayObject* hitObject = intersection.object();
     RayMaterial hitMaterial = intersection.material();
 
     // Loop all light sources, accumulate diffuse and specular
@@ -174,10 +184,8 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
         // Sum diffuse shading from all light sources
         diffuse = min(diffuse + currDiffuse, 1.f);
         // Add specular lightning
-        Vector3D reflectionVector = direction - 
-                                    intersection.normal()*
-                                    direction.dotProduct(intersection.normal())*2;
-        reflectionVector.normalize();
+		Vector3D reflectionVector = mirror(direction, intersection.normal());
+		reflectionVector.normalize();
 
         float specularShading = reflectionVector.dotProduct(lightRay);
         if(specularShading<0)
@@ -188,10 +196,9 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
 
 
     // Calculate reflection
-    Vector3D reflectionVector = direction - 
-                                intersection.normal()*
-                                intersection.normal().dotProduct(direction)*2;
+    Vector3D reflectionVector = mirror(direction, intersection.normal());
     reflectionVector.normalize();
+
     RayColor reflectionColor = rayTrace(intersection.point() +
                                         (reflectionVector*SMALL_NUMBER), 
                                         reflectionVector, 

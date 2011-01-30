@@ -1,5 +1,5 @@
 CXX 	= g++
-CXXFLAGS = -Wall -DNUM_THREADS=2
+CXXFLAGS = -Wall -DNUM_THREADS=2 -O2
 
 objects = $(patsubst %.cpp, %.o, $(wildcard src/*.cpp))
 raytrace: $(objects) 

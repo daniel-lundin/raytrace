@@ -10,6 +10,7 @@
 #include "parser.h"
 #include "consolelogger.h"
 #include "nologger.h"
+#include "consoleprogress.h"
 
 using namespace std;
 
@@ -59,9 +60,11 @@ int main(int argc, char** argv)
     }
 
     // Parse
-    RayWorld r;    
+    Progress progress;//(80, width*height);
+    RayWorld r(&progress);    
     NoLogger logger;
     Parser p(&r, &logger);
+    cout << "Parsing: " << argv[1] << endl;
     try
     {
         p.parse(input);
@@ -75,11 +78,12 @@ int main(int argc, char** argv)
     
     struct timeval t1, t2;
     gettimeofday(&t1, 0);
+    cout << "Rendering..." << endl;
     r.render(width, height);
     gettimeofday(&t2, 0);
     RayCanvas* canvas = r.canvas();    
     long usecdiff = (t2.tv_sec*1000000 + t2.tv_usec) - (t1.tv_sec*1000000 + t1.tv_usec);
-    cout << "Render took: " << usecdiff/1000 << " msecs " << endl;
+    cout << endl << endl << "Render took: " << usecdiff/1000 << " msecs " << endl;
 
     BMP bmp(width, height);
 

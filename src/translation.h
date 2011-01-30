@@ -13,11 +13,11 @@ public:
                     const Vector3D& direction, 
                     std::vector<Intersection>&);
 private:
+    RayObject* m_obj;
+
     float m_x;
     float m_y;
     float m_z;
-
-    RayObject* m_obj;
 };
 
 #endif

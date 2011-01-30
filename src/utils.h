@@ -19,4 +19,7 @@ struct DistanceSorter
     }
     const Vector3D& m_p;
 };
+
+// Vector operations
+Vector3D mirror(const Vector3D& v, const Vector3D& mirror);
 #endif

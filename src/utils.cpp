@@ -36,3 +36,8 @@ Vector3D sinify(const Vector3D& v, const Vector3D& point)
     r.setZ(r.z() + 0.2*sin(point.z()*10));
     return r.normalized();
 }
+
+Vector3D mirror(const Vector3D& v, const Vector3D& mirror)
+{
+	return v - mirror*mirror.dotProduct(v)*2;
+}

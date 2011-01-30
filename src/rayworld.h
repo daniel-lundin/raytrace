@@ -7,11 +7,13 @@
 #include "raycamera.h"
 #include "pointlight.h"
 
+// Forward declarations
+class Progress;
 
 class RayWorld
 {
 public:
-    RayWorld();    
+    RayWorld(Progress*);    
     void render(int pixelWidth, int pixelHeight);
 
     void addObject(RayObject*);
@@ -24,10 +26,12 @@ public:
     RayColor rayTrace(const Vector3D& start, const Vector3D& direction, int depth);
     bool closestIntersection(const Vector3D& start, const Vector3D& direction, Intersection&);
 private:
+    Progress* m_progress;
     RayCamera m_camera;
     std::vector<RayObject*> m_objects;
     std::vector<PointLight*> m_lights;
     RayCanvas* m_canvas;
+
 
 };
 
