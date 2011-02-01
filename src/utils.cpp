@@ -5,7 +5,7 @@
 // this is just some playing around
 Vector3D randomDisplaceVector(const Vector3D& v, float max)
 {
-    Vector3D dispV(v);    
+    Vector3D dispV(v);
     float xd, yd, zd;
     xd = (float) rand()/RAND_MAX - .5;
     yd = (float) rand()/RAND_MAX - .5;
@@ -40,4 +40,20 @@ Vector3D sinify(const Vector3D& v, const Vector3D& point)
 Vector3D mirror(const Vector3D& v, const Vector3D& mirror)
 {
 	return v - mirror*mirror.dotProduct(v)*2;
+}
+
+Vector3D refract(const Vector3D& in, const Vector3D& normal, float n1, float n2)
+{
+	float cosin = in.dotProduct(normal * -1);
+	float cosout = sqrt(1 - pow((n1/n2),2)*(1 - pow(cosin, 2)));
+	Vector3D refract;
+	if (cosin > 0) 
+	{
+		refract = in*(n1/n2) + normal*((n1/n2)*cosin - cosout);
+	}
+	else
+	{
+		refract = in*(n1/n2) + normal*((n1/n2)*cosin + cosout);
+	}
+	return refract;
 }

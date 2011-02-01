@@ -7,7 +7,7 @@ RayTriangle::RayTriangle(const Vector3D& v1, const Vector3D& v2, const Vector3D&
     Vector3D v12 = m_v2 - m_v1;
     Vector3D v13 = m_v3 - m_v1;
     Vector3D planeNormal = v12.crossProduct(v13);
-    m_plane = new RayPlane(v1, planeNormal, RayMaterial(RayColor(), 1, 1, 1, 1, 1));
+    m_plane = new RayPlane(v1, planeNormal, material);
 }
 
 RayTriangle::~ RayTriangle()

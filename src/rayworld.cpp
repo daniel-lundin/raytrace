@@ -1,5 +1,6 @@
 #include <iostream>
 #include <pthread.h>
+#include <time.h> // to seed rand
 
 #include "rayworld.h"
 #include "raysphere.h"
@@ -22,7 +23,7 @@ using namespace std;
 #define SMALL_NUMBER 0.01
 RayMaterial testMaterial1()
 {
-    return RayMaterial(RayColor(130,90,90), 0,0.8,0.3,30,0);
+    return RayMaterial(RayColor(130,90,90), 0,0.8,0.3,30,0,0,0);
 }
 struct ThreadTraceData
 {
@@ -55,13 +56,14 @@ void* pixelTrace(void* threadData)
         }
     }
     delete d;
-	return 0;
+    return 0;
 }
 
 RayWorld::RayWorld(Progress* progress)
     : m_progress(progress)
 {    
     m_canvas = 0;
+    srand(time(NULL));
 }
 
 void RayWorld::addObject(RayObject* object)
@@ -180,15 +182,14 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
         float currDiffuse = lightRay.dotProduct(intersection.normal());
         // Stay positive!
         currDiffuse = max(currDiffuse, 0.f);
-
         // Sum diffuse shading from all light sources
         diffuse = min(diffuse + currDiffuse, 1.f);
         // Add specular lightning
-		Vector3D reflectionVector = mirror(direction, intersection.normal());
-		reflectionVector.normalize();
+        Vector3D reflectionVector = mirror(direction, intersection.normal());
+        reflectionVector.normalize();
 
         float specularShading = reflectionVector.dotProduct(lightRay);
-        if(specularShading<0)
+        if(specularShading < 0)
             specularShading = 0;
         specularShading = pow(specularShading, hitMaterial.specPower());
         specular = min(specularShading, 1.0f);
@@ -196,23 +197,52 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
 
 
     // Calculate reflection
-    Vector3D reflectionVector = mirror(direction, intersection.normal());
-    reflectionVector.normalize();
-
-    RayColor reflectionColor = rayTrace(intersection.point() +
-                                        (reflectionVector*SMALL_NUMBER), 
-                                        reflectionVector, 
-                                        depth - 1);
+    RayColor reflectionColor;
     float reflection = hitMaterial.reflection();
+    if(reflection != 0)
+    { 
+            Vector3D reflectionVector = mirror(direction, intersection.normal());
+        reflectionVector.normalize();
+            
+            reflectionColor = rayTrace(intersection.point() +
+                                       (reflectionVector*SMALL_NUMBER), 
+                                       reflectionVector, 
+                                       depth - 1);
+    }
+
+    // Calculate refraction vector
+    RayColor refractionColor; 
+    float refraction = hitMaterial.refraction();
+    if(refraction != 0)
+    {
+        Vector3D normal = intersection.normal();
+        float n1 = 1;
+        float n2 = hitMaterial.refractionIndex();
+        if(false && intersection.insideHit())
+        {
+            normal = normal*-1;
+            std::swap(n1, n2);
+        }
+        Vector3D refractionVector = refract(direction, 
+                                            normal,
+                                            n1,
+                                            n2);
+
+        refractionColor = rayTrace(intersection.point() + 
+                                   (refractionVector*SMALL_NUMBER),
+                                   refractionVector,
+                                   depth - 1);
+    }
     // This is the lightning model    
     diffuse *= intersection.material().diffuse();    
     specular *= intersection.material().specular();
 
     RayColor pixColor;
     pixColor = hitColor.scaled(hitMaterial.ambient());
-    pixColor += hitColor.scaled(diffuse).scaled(1-reflection);
+    pixColor += hitColor.scaled(diffuse);
     pixColor += reflectionColor.scaled(reflection);
     pixColor += RayColor(255,255,255).scaled(specular);
+    pixColor = pixColor.scaled(1-refraction) + refractionColor.scaled(refraction);
     return pixColor;
 }
 

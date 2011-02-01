@@ -22,4 +22,5 @@ struct DistanceSorter
 
 // Vector operations
 Vector3D mirror(const Vector3D& v, const Vector3D& mirror);
+Vector3D refract(const Vector3D& in, const Vector3D& normal, float n1, float n2);
 #endif

@@ -11,17 +11,30 @@ public:
                 float diffuse,
                 float specular,
                 float specPower,
-                float reflection);
+                float reflection,
+				float refraction,
+				float refractionIndex);
     RayMaterial();
     
+	// setters
+	void setColor(const RayColor&);
+    void setAmbient(float);
+    void setDiffuse(float);
+    void setSpecular(float);
+    void setSpecPower(float);
+    void setReflection(float);
+	void setRefraction(float);
+    void setRefractionIndex(float);
+
+	// getters
+    const RayColor& color() const;
     float ambient() const;
     float diffuse() const;
     float specular() const;
     float specPower() const;
     float reflection() const;
-    float refractionRate() const;
-    float brytningsIndex() const;
-    const RayColor& color() const;
+	float refraction() const;
+    float refractionIndex() const;
 
 
     friend std::ostream& operator<<(std::ostream& os, const RayMaterial&);
@@ -32,8 +45,8 @@ private:
     float m_specular;
     float m_specPower;
     float m_reflection;
-    float m_refractionRate;
-    float m_brytningsIndex;
+	float m_refraction;
+    float m_refractionIndex;
 };
 
 std::ostream& operator<<(std::ostream& os, const RayMaterial&);

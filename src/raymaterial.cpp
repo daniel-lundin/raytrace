@@ -6,13 +6,17 @@ RayMaterial::RayMaterial(const RayColor& color,
                          float diffuse,
                          float specular,
                          float specPower,
-                         float reflection)
+                         float reflection,
+						 float refraction,
+						 float refractionIndex)
     : m_color(color),
       m_ambient(ambient),
       m_diffuse(diffuse),
       m_specular(specular),
       m_specPower(specPower),
-      m_reflection(reflection)
+      m_reflection(reflection),
+	  m_refraction(refraction),
+	  m_refractionIndex(refractionIndex)
 {
 }
 
@@ -25,6 +29,45 @@ RayMaterial::RayMaterial()
       m_specPower(0),
       m_reflection(0)
 {
+}
+
+void RayMaterial::setColor(const RayColor& color)
+{
+	m_color = color;
+}
+
+void RayMaterial::setAmbient(float val)
+{
+	m_ambient = val;
+}
+
+void RayMaterial::setDiffuse(float val)
+{
+	m_diffuse = val;
+}
+
+void RayMaterial::setSpecular(float val)
+{
+	m_specular = val;
+}
+
+void RayMaterial::setSpecPower(float val)
+{
+	m_specPower = val;
+}
+
+void RayMaterial::setReflection(float val)
+{
+	m_reflection = val;
+}
+
+void RayMaterial::setRefraction(float val)
+{
+	m_refraction = val;
+}
+void RayMaterial::setRefractionIndex(float val)
+{
+	m_refractionIndex = val;
 }
 
 float RayMaterial::ambient() const
@@ -53,14 +96,14 @@ float RayMaterial::reflection() const
     return m_reflection;
 }
 
-float RayMaterial::refractionRate() const
-{
-    return m_refractionRate;
-}
 
-float RayMaterial::brytningsIndex() const
+float RayMaterial::refraction() const
 {
-    return m_brytningsIndex;
+	return m_refraction;
+}
+float RayMaterial::refractionIndex() const
+{
+    return m_refractionIndex;
 }
 
 const RayColor& RayMaterial::color() const
@@ -78,7 +121,7 @@ std::ostream& operator<<(std::ostream& os, const RayMaterial& mat)
     os << "specular: " << mat.m_specular << endl;
     os << "specPower:" << mat.m_specPower << endl;
     os << "reflection: " << mat.m_reflection << endl;
-    os << "refractionRate: " << mat.m_refractionRate << endl;
+    os << "refractionIndex: " << mat.m_refractionIndex << endl;
     return os;
 }
 

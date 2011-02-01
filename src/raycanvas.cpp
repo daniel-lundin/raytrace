@@ -3,11 +3,13 @@
 #include <iostream>
 
 using namespace std;
+#define AX 1.0
+#define AY .8
 
 RayCanvas::RayCanvas(const Vector3D& origin, const Vector3D& lookat, const Vector3D& up, int pixWidth, int pixHeight)
     : m_origin(origin), m_pixWidth(pixWidth), m_pixHeight(pixHeight)
 {
-    float d = 1.5;
+    float d = 2;
     Vector3D direction = lookat - m_origin;
     direction.normalize();
 
@@ -17,7 +19,7 @@ RayCanvas::RayCanvas(const Vector3D& origin, const Vector3D& lookat, const Vecto
 
     //m_focalPlane = RayPlane();
 
-    m_upperLeft = canvasCenter + m_side + m_up;    
+    m_upperLeft = canvasCenter + m_side*(AX/2) + m_up*(AY/2);    
     m_pixelColors.resize(pixHeight*pixWidth);
 }
 
@@ -26,8 +28,8 @@ Vector3D RayCanvas::vectorThrough(int pixelRow, int pixelCol)
 {
 
     Vector3D canvasPoint = m_upperLeft - 
-                           m_side*((float)pixelRow/m_pixWidth)*2 - 
-                           m_up*((float)pixelCol/m_pixHeight)*2;
+                           m_side*((float)pixelRow/m_pixWidth)*AX - 
+                           m_up*((float)pixelCol/m_pixHeight)*AY;
 
     Vector3D v = canvasPoint - m_origin;
     v.normalize();

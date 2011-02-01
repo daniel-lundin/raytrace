@@ -410,6 +410,8 @@ RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
 	float specular 		= 0;
 	float specpower 	= 0;
 	float reflection 	= 0;
+	float refraction    = 0;
+	float refractionIndex = 0;
     int r = 0;
 	int g = 0;
 	int b = 0;
@@ -436,6 +438,10 @@ RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
             specpower = value;
         else if(token == "reflection:")
             reflection = value;
+        else if(token == "refraction:")
+            refraction = value;
+        else if(token == "refractionindex:")
+            refractionIndex = value;
         else if(token == "color:")
         {
             r = value;
@@ -454,6 +460,8 @@ RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
     oss << "Amb: " << ambient << " Dif: " << diffuse;
     oss << "Spec: " << specular << " specPower: " << specpower;
     oss << "Reflection: " << reflection;
+	oss << "RefractionL: " << refraction;
+	oss << "RefractionIndex: " << refractionIndex;
     m_logger->debug(oss.str());
 
     return RayMaterial(RayColor(r,g,b), 
@@ -461,7 +469,9 @@ RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
                        diffuse, 
                        specular, 
                        specpower,
-                       reflection);
+                       reflection,
+					   refraction,
+					   refractionIndex);
                 
 }
 
