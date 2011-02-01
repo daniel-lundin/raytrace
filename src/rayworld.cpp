@@ -23,7 +23,7 @@ using namespace std;
 #define SMALL_NUMBER 0.01
 RayMaterial testMaterial1()
 {
-    return RayMaterial(RayColor(130,90,90), 0,0.8,0.3,30,0,0,0);
+    return RayMaterial(RayColor(130,90,90), 0.2,0.8,0.3,30,0,0,0);
 }
 struct ThreadTraceData
 {

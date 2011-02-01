@@ -1,7 +1,7 @@
 
 .camera
-    location: 0 3 -8
-    lookat: 0 0 0
+    location: 2 3 -7
+    lookat: -0.2 0 0
     up: 0 1 0
 next
 
@@ -10,7 +10,7 @@ next
     pos: 0 2 0
 next
 .light
-    pos: 0 2 4
+    pos: 0 2 -4
 next
 
 .plane

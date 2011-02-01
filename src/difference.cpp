@@ -1,9 +1,12 @@
+#include <iostream>
 #include <iterator>
 #include <algorithm>
 #include "difference.h"
 #include "utils.h"
 
 using std::copy;
+using std::cout;
+using std::endl;
 using std::back_inserter;
 
 Difference::Difference(RayObject* first, RayObject* second)
@@ -30,7 +33,6 @@ bool Difference::intersects(const Vector3D& start,
         std::copy(firstIsecs.begin(), firstIsecs.end(), back_inserter(isecs));
         return true;
     }
-
     // Gather all intersection in one vector and sort them by distance
     // from point start
     std::vector<Intersection> allISecs;
@@ -49,6 +51,7 @@ bool Difference::intersects(const Vector3D& start,
     {
         if(it->object() == m_first)
         {
+            // Hit on first object, add intersection only if not inside second
             if(!insideSecond)
             {
                 isecs.push_back(*it);
@@ -57,18 +60,15 @@ bool Difference::intersects(const Vector3D& start,
         }
         else if(it->object() == m_second)
         {
-            if(insideFirst)
+            if(insideFirst && insideSecond)
             {
-                if(insideSecond)
-                {
-                    // We're inside the first one 
-                    // and no longer inside the second(counting this hit)
-                    // so we have an intersection
-                    Intersection i(*it);
-                    i.setObject(m_first);
-                    i.setNormal(i.normal()*-1);
-                    isecs.push_back(i);
-                }
+                // We're inside the first one 
+                // and no longer inside the second(counting this hit)
+                // so we have an intersection
+                Intersection i(*it);
+                i.setObject(m_first);
+                i.setNormal(i.normal()*-1);
+                isecs.push_back(i);
             }
             insideSecond = !insideSecond;
         }

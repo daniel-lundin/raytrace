@@ -41,6 +41,7 @@ bool RayBox::intersects(const Vector3D& start,
            isecPoint.point().z() - EPS < m_z)
         {
             isecPoint.setMaterial(m_material);
+            isecPoint.setObject(this);
             isecs.push_back(isecPoint);
         }
     }
