@@ -1,0 +1,288 @@
+
+.camera
+    location: 0 3 -8
+    lookat: 0 0 0
+    up: 0 1 0
+next
+
+
+.light
+    pos: 0 2 0
+next
+.light
+    pos: 0 2 4
+next
+
+.plane
+    pos: 0 0 0
+    normal: 0 1 0
+    .material
+        color: 255 255 255
+        ambient: 0
+        diffuse: 0.4
+        specular: 0.8
+        specpower: 40
+        reflection: 0.8
+    next
+next
+
+
+.sphere
+    pos: 0.0 0.0 0.0
+    radius: 0.0
+    .material
+        color: 30 0 70
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: 0.144888873943 0.0151 -0.0388228567654
+    radius: 0.0151
+    .material
+        color: 31 0 69
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: 0.259807621135 0.0302 -0.15
+    radius: 0.0302
+    .material
+        color: 32 0 68
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: 0.318198051534 0.0453 -0.318198051534
+    radius: 0.0453
+    .material
+        color: 33 0 67
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: 0.3 0.0604 -0.519615242271
+    radius: 0.0604
+    .material
+        color: 34 0 66
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: 0.194114283827 0.0755 -0.724444369717
+    radius: 0.0755
+    .material
+        color: 35 0 65
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: 5.51091059616e-17 0.0906 -0.9
+    radius: 0.0906
+    .material
+        color: 36 0 64
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -0.271759997358 0.1057 -1.0142221176
+    radius: 0.1057
+    .material
+        color: 37 0 63
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -0.6 0.1208 -1.03923048454
+    radius: 0.1208
+    .material
+        color: 38 0 62
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -0.954594154602 0.1359 -0.954594154602
+    radius: 0.1359
+    .material
+        color: 39 0 61
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -1.29903810568 0.151 -0.75
+    radius: 0.151
+    .material
+        color: 40 0 60
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -1.59377761338 0.1661 -0.427051424419
+    radius: 0.1661
+    .material
+        color: 41 0 59
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -1.8 0.1812 -2.20436423847e-16
+    radius: 0.1812
+    .material
+        color: 42 0 58
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -1.88355536126 0.1963 0.50469713795
+    radius: 0.1963
+    .material
+        color: 43 0 57
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -1.81865334795 0.2114 1.05
+    radius: 0.2114
+    .material
+        color: 44 0 56
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -1.59099025767 0.2265 1.59099025767
+    radius: 0.2265
+    .material
+        color: 45 0 55
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -1.2 0.2416 2.07846096908
+    radius: 0.2416
+    .material
+        color: 46 0 54
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -0.659988565011 0.2567 2.46311085704
+    radius: 0.2567
+    .material
+        color: 47 0 53
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: -4.95981953655e-16 0.2718 2.7
+    radius: 0.2718
+    .material
+        color: 48 0 52
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
+
+.sphere
+    pos: 0.737634278542 0.2869 2.75288860492
+    radius: 0.2869
+    .material
+        color: 49 0 51
+        ambient: 0
+        diffuse: 0.8
+        specular: 0.7
+        specpower: 80
+        reflection: 0.8
+    next
+next
