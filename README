@@ -1,4 +1,4 @@
 make clean
 make
 
-./raytrace examples/ex1.rt 800 600 ex1.bmp
+./raytrace examples/spiral.rt 800 600 ex1.bmp
