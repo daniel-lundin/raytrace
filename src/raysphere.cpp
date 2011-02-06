@@ -40,6 +40,8 @@ bool RaySphere::intersects(const Vector3D& start, const Vector3D& direction, std
         normal.normalize();
         // Check if it's a hit from inside by doting direction with normal, if negative, 
         // hit is from inside(used for refractions)
+        //if(normal.dotProduct(direction) > 0)
+        //    continue;
 		inter.setInsideHit(normal.dotProduct(direction) > 0);
 
         //if(normal.dotProduct(direction) > 0)
@@ -52,7 +54,6 @@ bool RaySphere::intersects(const Vector3D& start, const Vector3D& direction, std
         inter.setMaterial(m_material);
         intersections.push_back(inter);
     }
-
     return intersections.size() > 0;
 }
 

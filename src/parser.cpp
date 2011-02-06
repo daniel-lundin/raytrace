@@ -11,6 +11,7 @@
 #include "rotation.h"
 #include "loginterface.h"
 #include "raycamera.h"
+#include "difference.h"
 
 using std::vector;
 using std::string;
@@ -71,34 +72,46 @@ bool Parser::parse(istream& stream)
     for(size_t i = 0; i < entCount; ++i)
     {
         ParseEntity* e = m_entities[i];
-        evaluateEntity(e);
+        if (e->type() == LIGHT) 
+        {
+            m_world->addLightSource(evaluateLightEntity(e));
+        }
+        else if(e->type() == CAMERA)
+        {
+            m_world->setCamera(evaluateCameraEntity(e));
+        }
+        else
+        {
+            m_world->addObject(evaluateEntity(e));
+        }
     }
     return true;
 }
 
-void Parser::evaluateEntity(ParseEntity* entity)
+RayObject* Parser::evaluateEntity(ParseEntity* entity)
 {
     switch(entity->type())
     {
         case SPHERE:
-            evaluateSphereEntity(entity);
+            return evaluateSphereEntity(entity);
             break;
         case CYLINDER:
-            evaluateCylinderEntity(entity);
-            break;
-        case CAMERA:
-            evaluateCameraEntity(entity);
+            return evaluateCylinderEntity(entity);
             break;
         case BOX:
-            evaluateBoxEntity(entity);
+            return evaluateBoxEntity(entity);
             break;
         case PLANE:
-            evaluatePlaneEntity(entity);
+            return evaluatePlaneEntity(entity);
             break;
-        case LIGHT:
-            evaluateLightEntity(entity);
+        case DIFFERENCE:
+            return evaluateDifferenceEntity(entity);
+            break;
+        case TRANSLATION:
+            return evaluateTranslationEntity(entity);
             break;
         default:
+            throw std::exception();
             break;
     }
 }
@@ -124,7 +137,7 @@ void Parser::dump()
     }
 }
 
-void Parser::evaluateSphereEntity(ParseEntity* entity)
+RayObject* Parser::evaluateSphereEntity(ParseEntity* entity)
 {
     Vector3D pos;
     float radius; 
@@ -181,11 +194,10 @@ void Parser::evaluateSphereEntity(ParseEntity* entity)
     oss << "Radius: " << radius;
     m_logger->info(oss.str());
 
-    RaySphere* sphere = new RaySphere(pos, radius, m);
-    m_world->addObject(sphere); 
+    return new RaySphere(pos, radius, m);
 }
 
-void Parser::evaluateCylinderEntity(ParseEntity* entity)
+RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)
 {
     Vector3D pos;
     float xrot = 0;
@@ -259,10 +271,10 @@ void Parser::evaluateCylinderEntity(ParseEntity* entity)
     RayObject* o = new RayCylinder(radius, length, m);
     o = new Rotation(o, xrot, yrot, zrot);
     o = new Translation(o, pos.x(), pos.y(), pos.z());
-    m_world->addObject(o);
+    return o;
 }
 
-void Parser::evaluateBoxEntity(ParseEntity* entity)
+RayObject* Parser::evaluateBoxEntity(ParseEntity* entity)
 {
     Vector3D pos;
 	Vector3D rot;
@@ -319,9 +331,10 @@ void Parser::evaluateBoxEntity(ParseEntity* entity)
     RayObject* o = new RayBox(xsize, ysize, zsize, m);
 	o = new Rotation(o, rot.x(), rot.y(), rot.z());
     o = new Translation(o, pos.x(), pos.y(), pos.z());
-    m_world->addObject(o);
+    return o;
 }
-void Parser::evaluatePlaneEntity(ParseEntity* entity)
+
+RayObject* Parser::evaluatePlaneEntity(ParseEntity* entity)
 {
     Vector3D pos, normal;
 
@@ -357,18 +370,50 @@ void Parser::evaluatePlaneEntity(ParseEntity* entity)
     // Make sure that is the case
     list<ParseEntity*>& children = entity->children();
     if(children.size() != 1)
-        throw runtime_error("Sphere missing material definition");
+        throw runtime_error("Plane missing material definition");
     ParseEntity* material = *children.begin();
     if(material->type() != MATERIAL)
-        throw runtime_error("Sphere missing material definition");
+        throw runtime_error("Plane missing material definition");
 
     RayMaterial m = evaluateMateriaEntity(material);
 
-    m_world->addObject(new RayPlane(pos, normal, m));
+    return new RayPlane(pos, normal, m);
 }
 
+RayObject* Parser::evaluateDifferenceEntity(ParseEntity* entity)
+{
+    list<ParseEntity*>& children = entity->children();
+    if(children.size() != 2)
+    {
+        throw std::runtime_error("difference must have two children");
+    }     
+    list<ParseEntity*>::iterator it = children.begin();
+    return new Difference(evaluateEntity(*it), evaluateEntity(*++it));
+}
 
-void Parser::evaluateLightEntity(ParseEntity* entity)
+RayObject* Parser::evaluateTranslationEntity(ParseEntity* entity)
+{
+    list<pair<int, string> >::iterator it = entity->lines().begin();
+
+    istringstream iss(it->second);
+    string token;
+    iss >> token;
+
+    float x,y,z;
+
+    if((iss >> x).fail())
+        throwParseError(it->first);
+
+    if((iss >> y).fail())
+        throwParseError(it->first);
+
+    if((iss >> z).fail())
+        throwParseError(it->first);
+
+    return new Translation(evaluateEntity(*entity->children().begin()), x, y, z);
+}
+
+PointLight* Parser::evaluateLightEntity(ParseEntity* entity)
 {
     Vector3D position;
 
@@ -400,7 +445,7 @@ void Parser::evaluateLightEntity(ParseEntity* entity)
         }
         ++it;
     }
-    m_world->addLightSource(new PointLight(position));
+    return new PointLight(position);
 }
 
 RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
@@ -475,7 +520,7 @@ RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
                 
 }
 
-void Parser::evaluateCameraEntity(ParseEntity* entity)
+RayCamera Parser::evaluateCameraEntity(ParseEntity* entity)
 {
     m_logger->info("Parsing camera");
     Vector3D location, lookat, up;
@@ -523,5 +568,5 @@ void Parser::evaluateCameraEntity(ParseEntity* entity)
     }
     if(!(locSet && lookSet && upSet))
        throwParseError(-1, "Missing attribute for camera definition"); 
-    m_world->setCamera(RayCamera(location, lookat, up));
+    return RayCamera(RayCamera(location, lookat, up));
 }

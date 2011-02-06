@@ -1,9 +1,15 @@
 CXX 	= g++
-CXXFLAGS = -Wall -DNUM_THREADS=2 -O2
+CXXFLAGS = -Wall -DNUM_THREADS=1 -O2
 
-objects = $(patsubst %.cpp, %.o, $(wildcard src/*.cpp))
-raytrace: $(objects) 
-	$(CXX) $(CFLAGS) $(objects) -o raytrace 
+allobjs = $(patsubst %.cpp, %.o, $(wildcard src/*.cpp))
+mainobjs = $(filter-out src/testmain.o, $(allobjs))
+testobjs = $(filter-out src/main.o, $(allobjs))
+
+raytrace: $(mainobjs)
+	$(CXX) $(CFLAGS) $(mainobjs) -o raytrace 
+
+test: $(testobjs)
+	$(CXX) $(CFLAGS) $(testobjs) -o test
 
 clean:
 	rm -f src/*.o

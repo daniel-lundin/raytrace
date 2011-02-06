@@ -22,6 +22,10 @@ ParseEntity::ParseEntity(const string& type, ParseEntity* parent)
         m_type = LIGHT;
     else if(type == "box")
         m_type = BOX;
+    else if(type == "difference")
+        m_type = DIFFERENCE;
+    else if(type == "translation")
+        m_type = TRANSLATION;
 }
 
 void ParseEntity::addLine(const string& line, const int lineno)

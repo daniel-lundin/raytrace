@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "parseentity.h"
+#include "raycamera.h"
 
 using std::istream;
 using std::vector;
@@ -14,6 +15,8 @@ using std::vector;
 class RayWorld;
 class RayMaterial;
 class Logger;
+class RayObject;
+class PointLight;
 
 
 
@@ -23,20 +26,22 @@ public:
     Parser(RayWorld* world, Logger* logger);
 
     bool parse(istream& stream);
-    void evaluateEntity(ParseEntity* entity);
+    RayObject* evaluateEntity(ParseEntity* entity);
 
     // ParseEntity overrides
     void addEntity(ParseEntity* entity);
     ParseEntity* parent();
     void dump();
 private:
-    void evaluateSphereEntity(ParseEntity* entity);
-    void evaluateCylinderEntity(ParseEntity* entity);
-    void evaluatePlaneEntity(ParseEntity* entity);
-    void evaluateLightEntity(ParseEntity* entity);
-    void evaluateBoxEntity(ParseEntity* entity);
+    RayObject* evaluateSphereEntity(ParseEntity* entity);
+    RayObject* evaluateCylinderEntity(ParseEntity* entity);
+    RayObject* evaluatePlaneEntity(ParseEntity* entity);
+    RayObject* evaluateDifferenceEntity(ParseEntity* entity);
+    RayObject* evaluateTranslationEntity(ParseEntity* entity);
+    PointLight* evaluateLightEntity(ParseEntity* entity);
+    RayObject* evaluateBoxEntity(ParseEntity* entity);
     RayMaterial evaluateMateriaEntity(ParseEntity* entity);
-    void evaluateCameraEntity(ParseEntity* entity);
+    RayCamera evaluateCameraEntity(ParseEntity* entity);
     // members
     RayWorld* m_world;
     ParseEntity* m_current;

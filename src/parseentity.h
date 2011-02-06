@@ -7,7 +7,15 @@ using std::list;
 using std::string;
 using std::pair;
 
-enum ParseEntities {SPHERE, CYLINDER, PLANE, BOX, CAMERA, MATERIAL, LIGHT};
+enum ParseEntities {SPHERE, 
+                    CYLINDER, 
+                    PLANE, 
+                    BOX, 
+                    CAMERA,
+                    MATERIAL, 
+                    LIGHT, 
+                    DIFFERENCE,
+                    TRANSLATION};
 
 class ParseEntity
 {

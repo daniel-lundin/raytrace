@@ -35,6 +35,7 @@ bool Rotation::intersects(const Vector3D& start,
     std::vector<Intersection>::iterator end = isecs.end();
     for (; it != end; ++it)
     {
+        it->setObject(this);
         // transform intersection point
         it->setPoint(apply(totrot, it->point()));
         

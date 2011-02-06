@@ -1,7 +1,8 @@
 #include "raybox.h"
 #include "rayplane.h"
 #include <vector>
-#define EPS 0.001
+#include <iostream>
+#define EPS 0.01
 
 RayBox::RayBox(float x, float y, float z, const RayMaterial& m)
     : m_x(x), m_y(y), m_z(z), m_material(m)
@@ -42,7 +43,16 @@ bool RayBox::intersects(const Vector3D& start,
         {
             isecPoint.setMaterial(m_material);
             isecPoint.setObject(this);
-            isecs.push_back(isecPoint);
+            bool close = false;
+            //for (unsigned int i = 0; i < isecs.size(); i++) {
+                //if(Vector3D(isecs[0].point() - isecPoint.point()).lengthSquared() < 0.1)
+            //    {
+             //       close = true;
+              //      break;
+               // }
+           // }
+            if(!close)
+                isecs.push_back(isecPoint);
         }
     }
     return isecs.size();
