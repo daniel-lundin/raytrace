@@ -8,14 +8,14 @@
 class RayCylinder : public RayObject
 {
 public:
-    RayCylinder(float radius, float length, const RayMaterial&);
+    RayCylinder(double radius, double length, const RayMaterial&);
 
     bool intersects(const Vector3D& start, 
                     const Vector3D& direction, 
                     std::vector<Intersection>&);
 private:
     RayMaterial m_material;
-    float m_radius;
-    float m_length;
+    double m_radius;
+    double m_length;
 };
 #endif

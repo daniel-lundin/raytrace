@@ -5,7 +5,7 @@
 class Rotation : public RayObject
 {
 public:
-    Rotation(RayObject* obj, float xrot, float yrot, float zrot);
+    Rotation(RayObject* obj, double xrot, double yrot, double zrot);
 
     bool intersects(const Vector3D& start, 
                     const Vector3D& direction, 
@@ -13,9 +13,9 @@ public:
 
 private:
     RayObject* m_obj;
-    float m_xrot;
-    float m_yrot;
-    float m_zrot;
+    double m_xrot;
+    double m_yrot;
+    double m_zrot;
 };
 
 #endif

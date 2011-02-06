@@ -8,27 +8,27 @@ class RayColor
 {
 public:
     RayColor();
-    RayColor(float r, float g, float b);
+    RayColor(double r, double g, double b);
 
-    void setR(float r);
-    void setG(float g);
-    void setB(float b);
+    void setR(double r);
+    void setG(double g);
+    void setB(double b);
 
-    float r() const;
-    float g() const;
-    float b() const;
+    double r() const;
+    double g() const;
+    double b() const;
 
-    void scale(float factor);
-    RayColor scaled(float scale);
+    void scale(double factor);
+    RayColor scaled(double scale);
     // Operators
     RayColor operator+(const RayColor&);
     RayColor& operator+=(const RayColor&);    
 
     std::string toString() const;
 private:
-    float m_r;
-    float m_g;
-    float m_b;
+    double m_r;
+    double m_g;
+    double m_b;
 
 };
 

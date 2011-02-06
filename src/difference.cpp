@@ -89,7 +89,7 @@ bool Difference::intersects(const Vector3D& start,
                 // and no longer inside the second(counting this hit)
                 // so we have an intersection
                 lastHit = m_second;
-                it->setNormal(it->normal()*-1);
+                it->setNormal(it->normal()*-1.0);
                 it->setMaterial(lastMaterial);
                 it->setObject(this);
                 isecs.push_back(*it);

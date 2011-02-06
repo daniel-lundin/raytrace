@@ -140,7 +140,7 @@ void Parser::dump()
 RayObject* Parser::evaluateSphereEntity(ParseEntity* entity)
 {
     Vector3D pos;
-    float radius; 
+    double radius; 
 
     list<pair<int, string> >::iterator it = entity->lines().begin();    
     list<pair<int, string> >::iterator end = entity->lines().end();    
@@ -152,7 +152,7 @@ RayObject* Parser::evaluateSphereEntity(ParseEntity* entity)
         iss >> token;
         if(token == "pos:")
         {
-            float x, y, z;
+            double x, y, z;
             if((iss >> x).fail())
                 throwParseError(it->first);
 
@@ -200,11 +200,11 @@ RayObject* Parser::evaluateSphereEntity(ParseEntity* entity)
 RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)
 {
     Vector3D pos;
-    float xrot = 0;
-	float yrot = 0;
-	float zrot = 0;
-    float radius = 0;
-	float length = 0;
+    double xrot = 0;
+	double yrot = 0;
+	double zrot = 0;
+    double radius = 0;
+	double length = 0;
 
     list<pair<int, string> >::iterator it = entity->lines().begin();    
     list<pair<int, string> >::iterator end = entity->lines().end();    
@@ -217,7 +217,7 @@ RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)
         iss >> token;
         if(token == "pos:")
         {
-            float x, y, z;
+            double x, y, z;
             if((iss >> x).fail())
                 throwParseError(it->first);
 
@@ -232,7 +232,7 @@ RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)
         }
         else if(token == "rot:")
         {
-            float x, y, z;
+            double x, y, z;
             if((iss >> x).fail())
                 throwParseError(it->first);
 
@@ -278,9 +278,9 @@ RayObject* Parser::evaluateBoxEntity(ParseEntity* entity)
 {
     Vector3D pos;
 	Vector3D rot;
-    float xsize = 0;
-	float ysize = 0;
-	float zsize = 0;
+    double xsize = 0;
+	double ysize = 0;
+	double zsize = 0;
 
     list<pair<int, string> >::iterator it = entity->lines().begin();    
     list<pair<int, string> >::iterator end = entity->lines().end();    
@@ -291,7 +291,7 @@ RayObject* Parser::evaluateBoxEntity(ParseEntity* entity)
         string token;
         
         iss >> token;
-        float x,y,z;
+        double x,y,z;
 
         if((iss >> x).fail())
             throwParseError(it->first);
@@ -348,7 +348,7 @@ RayObject* Parser::evaluatePlaneEntity(ParseEntity* entity)
 
         iss >> token;
 
-        float x, y, z;
+        double x, y, z;
         if((iss >> x).fail())
             throwParseError(it->first);
 
@@ -383,12 +383,25 @@ RayObject* Parser::evaluatePlaneEntity(ParseEntity* entity)
 RayObject* Parser::evaluateDifferenceEntity(ParseEntity* entity)
 {
     list<ParseEntity*>& children = entity->children();
-    if(children.size() != 2)
-    {
-        throw std::runtime_error("difference must have two children");
-    }     
+    
+    if(children.size() < 2)
+        throw std::runtime_error("difference must have at least two children");
+
+    Difference* diff;
     list<ParseEntity*>::iterator it = children.begin();
-    return new Difference(evaluateEntity(*it), evaluateEntity(*++it));
+    list<ParseEntity*>::iterator end = children.end();
+
+    RayObject* r1 = evaluateEntity(*it);
+    ++it;
+    RayObject* r2 = evaluateEntity(*it);
+    diff = new Difference(r1, r2);
+    ++it;
+    while(it != end)
+    {
+        diff = new Difference(diff, evaluateEntity(*it)); 
+        ++it;
+    }     
+    return diff;
 }
 
 RayObject* Parser::evaluateTranslationEntity(ParseEntity* entity)
@@ -399,7 +412,7 @@ RayObject* Parser::evaluateTranslationEntity(ParseEntity* entity)
     string token;
     iss >> token;
 
-    float x,y,z;
+    double x,y,z;
 
     if((iss >> x).fail())
         throwParseError(it->first);
@@ -427,7 +440,7 @@ PointLight* Parser::evaluateLightEntity(ParseEntity* entity)
             throwParseError(it->first);
         if(token == "pos:")
         {
-            float x,y,z;
+            double x,y,z;
              
             if((iss >> x).fail())
                 throwParseError(it->first);
@@ -450,13 +463,13 @@ PointLight* Parser::evaluateLightEntity(ParseEntity* entity)
 
 RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
 {
-    float ambient 		= 0;
-	float diffuse 		= 0;
-	float specular 		= 0;
-	float specpower 	= 0;
-	float reflection 	= 0;
-	float refraction    = 0;
-	float refractionIndex = 0;
+    double ambient 		= 0;
+	double diffuse 		= 0;
+	double specular 		= 0;
+	double specpower 	= 0;
+	double reflection 	= 0;
+	double refraction    = 0;
+	double refractionIndex = 0;
     int r = 0;
 	int g = 0;
 	int b = 0;
@@ -466,7 +479,7 @@ RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
     {
         istringstream iss(it->second);
         string token;
-        float value;
+        double value;
         if((iss >> token).fail())
             throwParseError(it->first);
 
@@ -532,7 +545,7 @@ RayCamera Parser::evaluateCameraEntity(ParseEntity* entity)
     while(it != end)
     {
         string token;
-        float x,y,z;
+        double x,y,z;
         istringstream iss(it->second);
         iss >> token;
 

@@ -9,7 +9,7 @@ using namespace std;
 RayCanvas::RayCanvas(const Vector3D& origin, const Vector3D& lookat, const Vector3D& up, int pixWidth, int pixHeight)
     : m_origin(origin), m_pixWidth(pixWidth), m_pixHeight(pixHeight)
 {
-    float d = 2;
+    double d = 2;
     Vector3D direction = lookat - m_origin;
     direction.normalize();
 
@@ -28,8 +28,8 @@ Vector3D RayCanvas::vectorThrough(int pixelRow, int pixelCol)
 {
 
     Vector3D canvasPoint = m_upperLeft - 
-                           m_side*((float)pixelRow/m_pixWidth)*AX - 
-                           m_up*((float)pixelCol/m_pixHeight)*AY;
+                           m_side*((double)pixelRow/m_pixWidth)*AX - 
+                           m_up*((double)pixelCol/m_pixHeight)*AY;
 
     Vector3D v = canvasPoint - m_origin;
     v.normalize();

@@ -6,7 +6,7 @@
 class Translation : public RayObject
 {
 public:
-    Translation(RayObject* obj, float x, float y, float z);
+    Translation(RayObject* obj, double x, double y, double z);
 
     
     bool intersects(const Vector3D& start, 
@@ -15,9 +15,9 @@ public:
 private:
     RayObject* m_obj;
 
-    float m_x;
-    float m_y;
-    float m_z;
+    double m_x;
+    double m_y;
+    double m_z;
 };
 
 #endif

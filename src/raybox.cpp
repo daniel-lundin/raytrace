@@ -2,9 +2,9 @@
 #include "rayplane.h"
 #include <vector>
 #include <iostream>
-#define EPS 0.01
+#define EPS 0.0001
 
-RayBox::RayBox(float x, float y, float z, const RayMaterial& m)
+RayBox::RayBox(double x, double y, double z, const RayMaterial& m)
     : m_x(x), m_y(y), m_z(z), m_material(m)
 {}
 

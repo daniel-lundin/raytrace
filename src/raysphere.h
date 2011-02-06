@@ -12,17 +12,17 @@
 class RaySphere : public RayObject
 {
 public:
-    RaySphere(const Vector3D& center, float radius, const RayMaterial&);
+    RaySphere(const Vector3D& center, double radius, const RayMaterial&);
 
     bool intersects(const Vector3D& start, const Vector3D& direction, std::vector<Intersection>&);
     RayMaterial material();
 
     // Setters
     void setCenter(const Vector3D& center);
-    void setRadius(float radius);
+    void setRadius(double radius);
 private:
     Vector3D m_center;
-    float m_radius;
+    double m_radius;
     RayMaterial m_material;
 };
 

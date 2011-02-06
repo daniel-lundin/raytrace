@@ -3,7 +3,7 @@
 #include "vector3d.h"
 #include "intersection.h"
 
-Vector3D randomDisplaceVector(const Vector3D& v, float max);
+Vector3D randomDisplaceVector(const Vector3D& v, double max);
 Vector3D roundVector(const Vector3D& v);
 Vector3D sinify(const Vector3D& v, const Vector3D& point);
 
@@ -13,8 +13,8 @@ struct DistanceSorter
     DistanceSorter(const Vector3D& p) : m_p(p) {}
     bool operator()(const Intersection& first, const Intersection& second)
     {
-        float d1 = Vector3D(first.point() - m_p).lengthSquared();
-        float d2 = Vector3D(second.point() - m_p).lengthSquared();
+        double d1 = Vector3D(first.point() - m_p).lengthSquared();
+        double d2 = Vector3D(second.point() - m_p).lengthSquared();
         return d1 < d2;
     }
     const Vector3D& m_p;
@@ -22,5 +22,5 @@ struct DistanceSorter
 
 // Vector operations
 Vector3D mirror(const Vector3D& v, const Vector3D& mirror);
-Vector3D refract(const Vector3D& in, const Vector3D& normal, float n1, float n2);
+Vector3D refract(const Vector3D& in, const Vector3D& normal, double n1, double n2);
 #endif

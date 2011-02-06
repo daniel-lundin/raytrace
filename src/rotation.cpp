@@ -2,7 +2,7 @@
 #include "matrix.h"
 #include <string.h> // for memset
 
-Rotation::Rotation(RayObject* obj, float xrot, float yrot, float zrot)
+Rotation::Rotation(RayObject* obj, double xrot, double yrot, double zrot)
     : m_obj(obj), m_xrot(xrot), m_yrot(yrot), m_zrot(zrot)
 {
 }

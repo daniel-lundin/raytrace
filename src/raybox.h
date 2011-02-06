@@ -9,14 +9,14 @@
 class RayBox : public RayObject
 {
 public:
-    RayBox(float x, float x, float y, const RayMaterial& m);
+    RayBox(double x, double x, double y, const RayMaterial& m);
     bool intersects(const Vector3D& start,
                     const Vector3D& end,
                     std::vector<Intersection>&);
 private:
-    float m_x;
-    float m_y;
-    float m_z;
+    double m_x;
+    double m_y;
+    double m_z;
     RayMaterial m_material;
 };
 #endif

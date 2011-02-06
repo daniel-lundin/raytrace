@@ -7,46 +7,46 @@ class RayMaterial
 {
 public:
     RayMaterial(const RayColor& color,
-                float ambient,
-                float diffuse,
-                float specular,
-                float specPower,
-                float reflection,
-				float refraction,
-				float refractionIndex);
+                double ambient,
+                double diffuse,
+                double specular,
+                double specPower,
+                double reflection,
+				double refraction,
+				double refractionIndex);
     RayMaterial();
     
 	// setters
 	void setColor(const RayColor&);
-    void setAmbient(float);
-    void setDiffuse(float);
-    void setSpecular(float);
-    void setSpecPower(float);
-    void setReflection(float);
-	void setRefraction(float);
-    void setRefractionIndex(float);
+    void setAmbient(double);
+    void setDiffuse(double);
+    void setSpecular(double);
+    void setSpecPower(double);
+    void setReflection(double);
+	void setRefraction(double);
+    void setRefractionIndex(double);
 
 	// getters
     const RayColor& color() const;
-    float ambient() const;
-    float diffuse() const;
-    float specular() const;
-    float specPower() const;
-    float reflection() const;
-	float refraction() const;
-    float refractionIndex() const;
+    double ambient() const;
+    double diffuse() const;
+    double specular() const;
+    double specPower() const;
+    double reflection() const;
+	double refraction() const;
+    double refractionIndex() const;
 
 
     friend std::ostream& operator<<(std::ostream& os, const RayMaterial&);
 private:
     RayColor m_color;
-    float m_ambient;
-    float m_diffuse;
-    float m_specular;
-    float m_specPower;
-    float m_reflection;
-	float m_refraction;
-    float m_refractionIndex;
+    double m_ambient;
+    double m_diffuse;
+    double m_specular;
+    double m_specPower;
+    double m_reflection;
+	double m_refraction;
+    double m_refractionIndex;
 };
 
 std::ostream& operator<<(std::ostream& os, const RayMaterial&);

@@ -1,6 +1,6 @@
 #include "translation.h"
 
-Translation::Translation(RayObject* obj, float x, float y, float z)
+Translation::Translation(RayObject* obj, double x, double y, double z)
     : m_obj(obj), m_x(x), m_y(y), m_z(z)
 {
 }

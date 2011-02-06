@@ -150,8 +150,8 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
     RayMaterial hitMaterial = intersection.material();
 
     // Loop all light sources, accumulate diffuse and specular
-    float diffuse = 0;
-    float specular = 0;
+    double diffuse = 0;
+    double specular = 0;
 
     std::vector<PointLight*>::iterator lightIt = m_lights.begin();
     std::vector<PointLight*>::iterator lightEnd = m_lights.end();
@@ -179,26 +179,26 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
         
         // Calculate diffuse ligtning by dotting 
         // normal of intersection point with ray from light source
-        float currDiffuse = lightRay.dotProduct(intersection.normal());
+        double currDiffuse = lightRay.dotProduct(intersection.normal());
         // Stay positive!
-        currDiffuse = max(currDiffuse, 0.f);
+        currDiffuse = max(currDiffuse, 0.0);
         // Sum diffuse shading from all light sources
-        diffuse = min(diffuse + currDiffuse, 1.f);
+        diffuse = min(diffuse + currDiffuse, 1.0);
         // Add specular lightning
         Vector3D reflectionVector = mirror(direction, intersection.normal());
         reflectionVector.normalize();
 
-        float specularShading = reflectionVector.dotProduct(lightRay);
+        double specularShading = reflectionVector.dotProduct(lightRay);
         if(specularShading < 0)
             specularShading = 0;
         specularShading = pow(specularShading, hitMaterial.specPower());
-        specular = min(specularShading, 1.0f);
+        specular = min(specularShading, 1.0);
     }
 
 
     // Calculate reflection
     RayColor reflectionColor;
-    float reflection = hitMaterial.reflection();
+    double reflection = hitMaterial.reflection();
     if(reflection != 0)
     { 
             Vector3D reflectionVector = mirror(direction, intersection.normal());
@@ -212,12 +212,12 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
 
     // Calculate refraction vector
     RayColor refractionColor; 
-    float refraction = hitMaterial.refraction();
+    double refraction = hitMaterial.refraction();
     if(refraction != 0)
     {
         Vector3D normal = intersection.normal();
-        float n1 = 1;
-        float n2 = hitMaterial.refractionIndex();
+        double n1 = 1;
+        double n2 = hitMaterial.refractionIndex();
         if(false && intersection.insideHit())
         {
             normal = normal*-1;

@@ -6,41 +6,41 @@ Vector3D::Vector3D()
 {
 }
   
-Vector3D::Vector3D(float x, float y, float z)
+Vector3D::Vector3D(double x, double y, double z)
     :m_x(x), m_y(y), m_z(z)
 {
 
 }
 
 
-float Vector3D::x() const
+double Vector3D::x() const
 {
     return m_x;
 }
 
-float Vector3D::y() const
+double Vector3D::y() const
 {
     return m_y;
 }
 
-float Vector3D::z() const
+double Vector3D::z() const
 {
     return m_z;
 }
 
-Vector3D& Vector3D::setX(float x)
+Vector3D& Vector3D::setX(double x)
 {
     m_x = x;
     return *this;
 }
 
-Vector3D& Vector3D::setY(float y)
+Vector3D& Vector3D::setY(double y)
 {
     m_y = y;
     return *this;
 }
 
-Vector3D& Vector3D::setZ(float z)
+Vector3D& Vector3D::setZ(double z)
 {
     m_z = z;
     return *this;
@@ -49,7 +49,7 @@ Vector3D& Vector3D::setZ(float z)
 // Operations
 Vector3D& Vector3D::normalize()
 {
-    float len = length();
+    double len = length();
     m_x /= len;
     m_y /= len;
     m_z /= len;
@@ -57,12 +57,12 @@ Vector3D& Vector3D::normalize()
     return *this;
 }
 
-float Vector3D::length() const
+double Vector3D::length() const
 {
     return sqrt(lengthSquared());
 }
 
-float Vector3D::lengthSquared() const
+double Vector3D::lengthSquared() const
 {
     return x()*x() + y()*y() + z()*z();
 
@@ -70,7 +70,7 @@ float Vector3D::lengthSquared() const
 
 
 
-float Vector3D::dotProduct(const Vector3D& other) const
+double Vector3D::dotProduct(const Vector3D& other) const
 {
     return x()*other.x() + y()*other.y() + z()*other.z();
 }
@@ -83,11 +83,11 @@ Vector3D Vector3D::crossProduct(const Vector3D& other) const
 
 Vector3D Vector3D::normalized() const
 {
-    float l = length();
+    double l = length();
     return Vector3D(x()/l, y()/l, z()/l);
 }
 
-const Vector3D Vector3D::operator*(float scale) const
+const Vector3D Vector3D::operator*(double scale) const
 {
     return Vector3D(x()*scale, y()*scale, z()*scale);
 }

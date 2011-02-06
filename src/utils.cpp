@@ -3,13 +3,13 @@
 #include <math.h>
 
 // this is just some playing around
-Vector3D randomDisplaceVector(const Vector3D& v, float max)
+Vector3D randomDisplaceVector(const Vector3D& v, double max)
 {
     Vector3D dispV(v);
-    float xd, yd, zd;
-    xd = (float) rand()/RAND_MAX - .5;
-    yd = (float) rand()/RAND_MAX - .5;
-    zd = (float) rand()/RAND_MAX - .5;
+    double xd, yd, zd;
+    xd = (double) rand()/RAND_MAX - .5;
+    yd = (double) rand()/RAND_MAX - .5;
+    zd = (double) rand()/RAND_MAX - .5;
     xd *= max;
     yd *= max;
     zd *= max;
@@ -42,10 +42,10 @@ Vector3D mirror(const Vector3D& v, const Vector3D& mirror)
 	return v - mirror*mirror.dotProduct(v)*2;
 }
 
-Vector3D refract(const Vector3D& in, const Vector3D& normal, float n1, float n2)
+Vector3D refract(const Vector3D& in, const Vector3D& normal, double n1, double n2)
 {
-	float cosin = in.dotProduct(normal * -1);
-	float cosout = sqrt(1 - pow((n1/n2),2)*(1 - pow(cosin, 2)));
+	double cosin = in.dotProduct(normal * -1);
+	double cosout = sqrt(1 - pow((n1/n2),2)*(1 - pow(cosin, 2)));
 	Vector3D refract;
 	if (cosin > 0) 
 	{

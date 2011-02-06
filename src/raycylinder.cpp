@@ -3,7 +3,7 @@
 #include <math.h>
 
 
-RayCylinder::RayCylinder(float radius, float length, const RayMaterial& m)
+RayCylinder::RayCylinder(double radius, double length, const RayMaterial& m)
     : m_material(m), m_radius(radius), m_length(length) 
 {
 }
@@ -21,18 +21,18 @@ bool RayCylinder::intersects(const Vector3D& start,
     // b = 2*start_x*dir_x + 2*start_y*dir_y
     // c = start_x^2 + start_y^2 - radius
 
-    float a = pow(direction.x(), 2) + pow(direction.y(), 2);
-    float b = 2*start.x()*direction.x() + 2*start.y()*direction.y();
-    float c = pow(start.x(), 2) + pow(start.y(), 2) - pow(m_radius,2);
+    double a = pow(direction.x(), 2) + pow(direction.y(), 2);
+    double b = 2*start.x()*direction.x() + 2*start.y()*direction.y();
+    double c = pow(start.x(), 2) + pow(start.y(), 2) - pow(m_radius,2);
 
-    float root = pow(b,2) - 4*a*c;
+    double root = pow(b,2) - 4*a*c;
     if(root < 0)
         return false;
     
-    float t1 = (-b + sqrt(root))/(2*a);
-    float t2 = (-b - sqrt(root))/(2*a);
+    double t1 = (-b + sqrt(root))/(2*a);
+    double t2 = (-b - sqrt(root))/(2*a);
 
-    float ts[] = {t1, t2};
+    double ts[] = {t1, t2};
     for(int i=0;i<2;++i)
     {
         if(ts[i] < 0)

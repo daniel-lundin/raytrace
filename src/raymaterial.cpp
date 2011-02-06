@@ -2,13 +2,13 @@
 
 using std::endl;
 RayMaterial::RayMaterial(const RayColor& color,
-                         float ambient,
-                         float diffuse,
-                         float specular,
-                         float specPower,
-                         float reflection,
-						 float refraction,
-						 float refractionIndex)
+                         double ambient,
+                         double diffuse,
+                         double specular,
+                         double specPower,
+                         double reflection,
+						 double refraction,
+						 double refractionIndex)
     : m_color(color),
       m_ambient(ambient),
       m_diffuse(diffuse),
@@ -36,72 +36,72 @@ void RayMaterial::setColor(const RayColor& color)
 	m_color = color;
 }
 
-void RayMaterial::setAmbient(float val)
+void RayMaterial::setAmbient(double val)
 {
 	m_ambient = val;
 }
 
-void RayMaterial::setDiffuse(float val)
+void RayMaterial::setDiffuse(double val)
 {
 	m_diffuse = val;
 }
 
-void RayMaterial::setSpecular(float val)
+void RayMaterial::setSpecular(double val)
 {
 	m_specular = val;
 }
 
-void RayMaterial::setSpecPower(float val)
+void RayMaterial::setSpecPower(double val)
 {
 	m_specPower = val;
 }
 
-void RayMaterial::setReflection(float val)
+void RayMaterial::setReflection(double val)
 {
 	m_reflection = val;
 }
 
-void RayMaterial::setRefraction(float val)
+void RayMaterial::setRefraction(double val)
 {
 	m_refraction = val;
 }
-void RayMaterial::setRefractionIndex(float val)
+void RayMaterial::setRefractionIndex(double val)
 {
 	m_refractionIndex = val;
 }
 
-float RayMaterial::ambient() const
+double RayMaterial::ambient() const
 {
     return m_ambient;
 }
 
-float RayMaterial::diffuse() const
+double RayMaterial::diffuse() const
 {
     return m_diffuse;
 }
 
-float RayMaterial::specular() const
+double RayMaterial::specular() const
 {
     return m_specular;
 }
 
-float RayMaterial::specPower() const
+double RayMaterial::specPower() const
 {
     return m_specPower;
 }
 
 
-float RayMaterial::reflection() const
+double RayMaterial::reflection() const
 {
     return m_reflection;
 }
 
 
-float RayMaterial::refraction() const
+double RayMaterial::refraction() const
 {
 	return m_refraction;
 }
-float RayMaterial::refractionIndex() const
+double RayMaterial::refractionIndex() const
 {
     return m_refractionIndex;
 }

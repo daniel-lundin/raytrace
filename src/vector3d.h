@@ -6,29 +6,29 @@ class Vector3D
 {
 public:
     Vector3D();
-    Vector3D(float x, float y, float z);
+    Vector3D(double x, double y, double z);
     // Compiler generated copy-/copy assignment constructors
     // works fine
      
     // Getters and setters
-    float x() const;
-    float y() const;
-    float z() const;
+    double x() const;
+    double y() const;
+    double z() const;
 
-    Vector3D& setX(float x);
-    Vector3D& setY(float y);
-    Vector3D& setZ(float z);
+    Vector3D& setX(double x);
+    Vector3D& setY(double y);
+    Vector3D& setZ(double z);
 
     // Operator overloads
-    const Vector3D operator*(float scale) const;
+    const Vector3D operator*(double scale) const;
     const Vector3D operator+(const Vector3D& v2) const;
     const Vector3D operator-(const Vector3D& v2) const;
 
     // Operations
-    float length() const;
-    float lengthSquared() const;
+    double length() const;
+    double lengthSquared() const;
 
-    float dotProduct(const Vector3D& other) const;
+    double dotProduct(const Vector3D& other) const;
     Vector3D crossProduct(const Vector3D& other) const;
 
     Vector3D& normalize();
@@ -37,9 +37,9 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const Vector3D&);
 private:
-    float m_x;
-    float m_y;
-    float m_z;
+    double m_x;
+    double m_y;
+    double m_z;
 };
 
 std::ostream& operator<<(std::ostream& os, const Vector3D&);

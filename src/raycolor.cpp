@@ -13,55 +13,55 @@ RayColor::RayColor()
 }
 
 
-RayColor::RayColor(float r, float g, float b)
+RayColor::RayColor(double r, double g, double b)
     : m_r(r), m_g(g), m_b(b)
 {
 
 }
 
-void RayColor::setR(float r)
+void RayColor::setR(double r)
 {
-    m_r = max(min(r, 255.f), 0.f);
+    m_r = max(min(r, 255.0), 0.0);
 }
 
-void RayColor::setG(float g)
+void RayColor::setG(double g)
 {
-    m_g = max(min(g, 255.f), 0.f);
+    m_g = max(min(g, 255.0), 0.0);
 }
 
-void RayColor::setB(float b)
+void RayColor::setB(double b)
 {
-    m_b = max(min(b, 255.f), 0.f);
+    m_b = max(min(b, 255.0), 0.0);
 }
 
-float RayColor::r() const
+double RayColor::r() const
 {
     return m_r;
 }
 
-float RayColor::g() const
+double RayColor::g() const
 {
     return m_g;
 }
 
-float RayColor::b() const
+double RayColor::b() const
 {
     return m_b;
 }
 
-void RayColor::scale(float factor)
+void RayColor::scale(double factor)
 {
     m_r *= factor;
     m_g *= factor;
     m_b *= factor;
 }
 
-RayColor RayColor::scaled(float scale)
+RayColor RayColor::scaled(double scale)
 {
     RayColor tmp;
-    tmp.setR((float)this->r() * scale);
-    tmp.setG((float)this->g() * scale);
-    tmp.setB((float)this->b() * scale);
+    tmp.setR((double)this->r() * scale);
+    tmp.setG((double)this->g() * scale);
+    tmp.setB((double)this->b() * scale);
     return tmp;
 }
 

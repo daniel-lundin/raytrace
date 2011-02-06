@@ -12,7 +12,7 @@ ConsoleProgress::ConsoleProgress(int width, int max)
 void ConsoleProgress::tick()
 {
     ++m_curr;
-    int newbar = ((float) m_curr / m_max )*(float) m_width;
+    int newbar = ((double) m_curr / m_max )*(double) m_width;
     if(newbar != m_currbar)
     {
         m_currbar = newbar;

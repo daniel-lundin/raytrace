@@ -3,31 +3,31 @@
 
 #define PI 3.14159265
 
-void generateXRot(MATRIX3D& m, float degree)
+void generateXRot(MATRIX3D& m, double degree)
 {
-    float rad = degree*(PI/180);
-    memset(m, 0, 3*3*sizeof(float));
+    double rad = degree*(PI/180);
+    memset(m, 0, 3*3*sizeof(double));
     // Setup rotation matrix around x-axis
     m[0][0] = 1;
     m[1][1] = m[2][2] = cos(rad);
     m[1][2] = - sin(rad);
     m[2][1] = sin(rad);
 }
-void generateYRot(MATRIX3D& m, float degree)
+void generateYRot(MATRIX3D& m, double degree)
 {
 
-    float rad = degree*(PI/180);
-    memset(m, 0, 3*3*sizeof(float));
+    double rad = degree*(PI/180);
+    memset(m, 0, 3*3*sizeof(double));
     // Setup rotation matrix around y-axis
     m[0][0] = m[2][2] = cos(rad);
     m[1][1] = 1;
     m[0][2] = sin(rad);
     m[2][0] = -sin(rad);
 }
-void generateZRot(MATRIX3D& m, float degree)
+void generateZRot(MATRIX3D& m, double degree)
 {
-    float rad = degree*(PI/180);
-    memset(m, 0, 3*3*sizeof(float));
+    double rad = degree*(PI/180);
+    memset(m, 0, 3*3*sizeof(double));
     // Setup rotation matrix around z-axis
     m[0][0] = m[1][1] = cos(rad);
     m[2][2] = 1;
@@ -44,7 +44,7 @@ void transpose(const MATRIX3D& in, MATRIX3D& out)
 
 Vector3D apply(const MATRIX3D& m, const Vector3D& v)
 {
-    float vec[3];
+    double vec[3];
     for (int i = 0; i < 3; i++) 
     {
         vec[i] = m[i][0]*v.x() + m[i][1]*v.y() + m[i][2]*v.z();
