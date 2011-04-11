@@ -9,7 +9,7 @@
 class RayBox : public RayObject
 {
 public:
-    RayBox(double x, double x, double y, const RayMaterial& m);
+    RayBox(double x, double y, double z, const RayMaterial& m);
     bool intersects(const Vector3D& start,
                     const Vector3D& end,
                     std::vector<Intersection>&);

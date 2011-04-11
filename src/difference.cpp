@@ -69,12 +69,13 @@ bool Difference::intersects(const Vector3D& start,
         {
             //cout << "Hit on first" << endl;
             // Hit on first object, add intersection only if not inside second
+            lastMaterial = it->material();
             if(!insideSecond)
             {
                 //cout << "\tAdding hit on first obj" << endl;
-                lastMaterial = it->material();
                 lastHit = m_first;
                 it->setObject(this);
+                it->setInsideHit(false);
                 isecs.push_back(*it);
             }
             insideFirst = !insideFirst;
@@ -92,6 +93,7 @@ bool Difference::intersects(const Vector3D& start,
                 it->setNormal(it->normal()*-1.0);
                 it->setMaterial(lastMaterial);
                 it->setObject(this);
+                it->setInsideHit(true);
                 isecs.push_back(*it);
             }
             insideSecond = !insideSecond;

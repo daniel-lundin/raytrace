@@ -1,8 +1,7 @@
 # Comments look like this
-# This is an examples of why loops should be cool
 .camera
-    location: 0 0 4
-    lookat: 0 -2 20
+    location: 0 2 0
+    lookat: 0 0 10
     up: 0 1 0
 next
 
@@ -11,205 +10,20 @@ next
 next
 
 .plane
-    pos: 0 0 20
-    normal: 0 0 -1
+    pos: 0 0 0
+    normal: 0 1 0
     .material
         color: 50 40 50
         ambient: 0.4
         diffuse: 0.6
         specular: 0.3
         specpower: 40
-        reflection: 0.4
+        reflection: 0.9
     next
 next
 
 .sphere
-    pos: -4 4 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-
-.sphere
-    pos: -2 4 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: 0 4 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: 2 4 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: 4 4 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: -4 2 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-
-.sphere
-    pos: -2 2 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: 0 2 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: 2 2 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: 4 2 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: -4 0 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-
-.sphere
-    pos: -2 0 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: 0 0 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: 2 0 20
-    radius: 1
-    .material        
-        color: 92 115 92
-        ambient: 0.6
-        diffuse: 0.8
-        specular: 0.3
-        specpower: 30
-        reflection: 0.3
-    next
-next
-
-.sphere
-    pos: 4 0 20
+    pos: 0 1 10
     radius: 1
     .material        
         color: 92 115 92

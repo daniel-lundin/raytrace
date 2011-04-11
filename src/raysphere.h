@@ -5,8 +5,9 @@
 #include "rayobject.h"
 #include "intersection.h"
 #include "vector3d.h"
-#include "RayColor.h"
+#include "raycolor.h"
 #include "raymaterial.h"
+#include "perlin.h"
 
 
 class RaySphere : public RayObject
@@ -24,6 +25,7 @@ private:
     Vector3D m_center;
     double m_radius;
     RayMaterial m_material;
+    Perlin m_perlin;
 };
 
 #endif // RAYSPHERE_H

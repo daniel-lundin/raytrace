@@ -1,10 +1,12 @@
 #include "rayplane.h"
 #include "utils.h"
+#include "perlin.h"
 
 RayPlane::RayPlane(const Vector3D& point, const Vector3D& up, const RayMaterial& material)
     : m_up(up), m_point(point), m_material(material)
 {
     m_up.normalize();
+    //m_perlin.generate1();
 }
 
 
@@ -20,11 +22,13 @@ bool RayPlane::intersects(const Vector3D& start, const Vector3D& direction, std:
     Intersection i;
     i.setObject(this);
     i.setPoint(start + direction*l);
-    i.setNormal(m_up);//randomDisplaceVector(m_up, 0.1));
+    i.setNormal(m_up);
+    //i.setNormal(m_perlin.displace(m_up, i.point()));//randomDisplaceVector(m_up, 0.1));
     i.setInsideHit(direction.dotProduct(m_up) < 0);
 
 	// Hardcoded checker
-	//int shade = (((int) i.point().x() + (int) i.point().z())%2)*255;
+	//int shade = (((int) i.point().x() + (int) i.point().z())) & 1;
+    //shade *= 255;
 	//m_material.setColor(RayColor(shade, shade, shade));
 
     i.setMaterial(m_material);

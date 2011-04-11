@@ -6,6 +6,7 @@
 #include "vector3d.h"
 #include "rayobject.h"
 #include "raymaterial.h"
+#include "perlin.h"
 
 class RayPlane : public RayObject
 {
@@ -19,6 +20,7 @@ private:
 
     Vector3D m_point;
     RayMaterial m_material;
+    Perlin m_perlin;
 };
 
 #endif // RAYPLANE_H

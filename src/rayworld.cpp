@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <pthread.h>
 #include <time.h> // to seed rand
 
@@ -63,7 +64,6 @@ RayWorld::RayWorld(Progress* progress)
     : m_progress(progress)
 {    
     m_canvas = 0;
-    srand(time(NULL));
 }
 
 void RayWorld::addObject(RayObject* object)

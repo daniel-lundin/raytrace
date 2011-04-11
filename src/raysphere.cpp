@@ -1,11 +1,14 @@
 #include <cstdlib>
+
 #include "raysphere.h"
 #include "math.h"
 #include "utils.h"
+#include "perlin.h"
 
 RaySphere::RaySphere(const Vector3D& center, double radius, const RayMaterial& material)
     : m_center(center), m_radius(radius), m_material(material)
 {
+    m_perlin.generate1();
 }
 
 
@@ -35,7 +38,7 @@ bool RaySphere::intersects(const Vector3D& start, const Vector3D& direction, std
 
         // Normal of itersection
         Vector3D normal = inter.point() - m_center;
-        rand();
+//        normal = m_perlin.displace(normal, inter.point());
 
         normal.normalize();
         // Check if it's a hit from inside by doting direction with normal, if negative, 

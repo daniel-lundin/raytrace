@@ -2,7 +2,7 @@
 #define RAYOBJECT_H
 #include "vector3d.h"
 #include "intersection.h"
-#include "RayColor.h"
+#include "raycolor.h"
 #include "raymaterial.h"
 #include <vector>
 

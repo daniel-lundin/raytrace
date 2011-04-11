@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include <math.h>
+#include <string>
 
 #define PI 3.14159265
 
