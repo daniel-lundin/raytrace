@@ -12,6 +12,8 @@
 #include "loginterface.h"
 #include "raycamera.h"
 #include "difference.h"
+#include "randomnormaldisplacer.h"
+#include "checkertexture.h"
 
 using std::vector;
 using std::string;
@@ -195,6 +197,7 @@ RayObject* Parser::evaluateSphereEntity(ParseEntity* entity)
     m_logger->info(oss.str());
 
     return new RaySphere(pos, radius, m);
+    return new RandomNormalDisplacer(new RaySphere(pos, radius, m), 0.06);
 }
 
 RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)

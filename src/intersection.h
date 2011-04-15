@@ -14,7 +14,7 @@ public:
     const Vector3D& point() const;
     const Vector3D& normal() const;
     RayObject* object();
-    RayMaterial material() const;
+    RayMaterial& material();
     bool insideHit() const;
 
     void setPoint(const Vector3D& point);

@@ -12,11 +12,20 @@
 class RayCanvas
 {
 public:
-    RayCanvas(const Vector3D& origin, const Vector3D& lookat, const Vector3D& up, int pixWidth, int pixHeight);
-    Vector3D vectorThrough(int pixelRow, int pixelCol);
+    RayCanvas(const Vector3D& origin, 
+              const Vector3D& lookat, 
+              const Vector3D& up, 
+              int pixWidth, 
+              int pixHeight,
+              double focalLength,
+              double apertureSize,
+              int raysPerPixel);
+    Vector3D vectorThrough(int pixelRow, int pixelCol) const;
+    Vector3D pointAt(int pixelRow, int pixelCol) const;
+    void DOFVectors(int pixelRow, int pixelCol, std::vector<std::pair<Vector3D, Vector3D> >& rays);
 
     void setColor(unsigned int x, unsigned int y, const RayColor&);
-    RayColor color(unsigned int x, unsigned int y);
+    RayColor color(unsigned int x, unsigned int y) const;
 private:   
 
     std::vector<RayColor> m_pixelColors;
@@ -28,6 +37,10 @@ private:
 
     int m_pixWidth;
     int m_pixHeight;
+    RayPlane m_focalPlane;
+    double m_focalLength;
+    double m_apertureSize;
+    int m_raysPerPixel;
 };
 
 

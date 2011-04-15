@@ -23,7 +23,7 @@ RayObject* Intersection::object()
     return m_object;
 }
 
-RayMaterial Intersection::material() const
+RayMaterial& Intersection::material()
 {
     return m_material;
 }

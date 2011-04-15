@@ -21,17 +21,20 @@ RayColor::RayColor(double r, double g, double b)
 
 void RayColor::setR(double r)
 {
-    m_r = max(min(r, 255.0), 0.0);
+    m_r = r;
+//    m_r = max(min(r, 255.0), 0.0);
 }
 
 void RayColor::setG(double g)
 {
-    m_g = max(min(g, 255.0), 0.0);
+    m_g = g;
+    //m_g = max(min(g, 255.0), 0.0);
 }
 
 void RayColor::setB(double b)
 {
-    m_b = max(min(b, 255.0), 0.0);
+    m_b = b;
+    //m_b = max(min(b, 255.0), 0.0);
 }
 
 double RayColor::r() const
@@ -56,12 +59,26 @@ void RayColor::scale(double factor)
     m_b *= factor;
 }
 
-RayColor RayColor::scaled(double scale)
+RayColor RayColor::scaled(double scale) const
 {
     RayColor tmp;
     tmp.setR((double)this->r() * scale);
     tmp.setG((double)this->g() * scale);
     tmp.setB((double)this->b() * scale);
+    return tmp;
+}
+
+void RayColor::clamp()
+{
+    m_r = min(255.0, m_r);
+    m_g = min(255.0, m_g);
+    m_b = min(255.0, m_b);
+}
+
+RayColor RayColor::clamped() const
+{
+    RayColor tmp(*this);
+    tmp.clamp();
     return tmp;
 }
 

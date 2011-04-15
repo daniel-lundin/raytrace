@@ -35,10 +35,3 @@ bool RayPlane::intersects(const Vector3D& start, const Vector3D& direction, std:
     intersections.push_back(i);
     return true;
 }
-
-
-RayMaterial RayPlane::material()
-{
-    return m_material;
-}
-

@@ -23,7 +23,10 @@ public:
     void setCamera(const RayCamera& camera);
     RayCanvas* canvas();
 
-    RayColor rayTrace(const Vector3D& start, const Vector3D& direction, int depth);
+    RayColor rayTrace(const Vector3D& start, 
+                      const Vector3D& direction, 
+                      int currDepth,
+                      int maxDepth);
     bool closestIntersection(const Vector3D& start, const Vector3D& direction, Intersection&);
 private:
     Progress* m_progress;

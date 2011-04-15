@@ -21,6 +21,7 @@
 
 using namespace std;
 
+#define PI 3.14159265
 #define SMALL_NUMBER 0.01
 RayMaterial testMaterial1()
 {
@@ -48,11 +49,29 @@ void* pixelTrace(void* threadData)
         {
             // "Fire of" a ray through point x, y and collect hits
             std::vector<Vector3D> rays;
+            Vector3D canvasPoint = d->canvas->pointAt(x, y);
             Vector3D ray = d->canvas->vectorThrough(x, y);
+
+#if 0
+            std::vector<std::pair<Vector3D, Vector3D> > DOFRays;
+            d->canvas->DOFVectors(x, y, DOFRays);
+            RayColor color(0,0,0);
+            for(unsigned int i=0;i<DOFRays.size();++i) {
+                color += d->world->rayTrace(DOFRays[i].first, 
+                                            DOFRays[i].second, 
+                                            d->reflectionDepth);
+            }
+
+            color.scale(1.0/DOFRays.size());
+            d->canvas->setColor(x, y, color);
+#else
             RayColor pixelColor = d->world->rayTrace(d->origin, 
                                                      ray, 
+                                                     0,
                                                      d->reflectionDepth);
             d->canvas->setColor(x, y, pixelColor);
+#endif            
+            
             d->progress->tick();
         }
     }
@@ -93,8 +112,10 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
                              m_camera.lookat(), 
                              m_camera.up(), 
                              pixelWidth, 
-                             pixelHeight);
+                             pixelHeight,
+                             18, 0.31, 8);
 
+#ifdef NUM_THREADS
     // Divide width between threads, the last thread gets the remaindor
     pthread_t threads[NUM_THREADS];
     int  widthPart = pixelWidth / NUM_THREADS;
@@ -112,7 +133,7 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
         threadData->yStart = 0;
         threadData->yEnd = pixelHeight;
         threadData->origin = m_camera.location();
-        threadData->reflectionDepth = 3;
+        threadData->reflectionDepth = 2;
         threadData->world = this;
         threadData->progress = m_progress;
 
@@ -130,14 +151,28 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
         void* status;
         pthread_join(threads[i], &status);
     }
+#else
+    for(int i=0;i<pixelWidth;++i) for(int j=0;j<pixelHeight;++j)
+    {
+            Vector3D ray = m_canvas->vectorThrough(i, j);
+
+            RayColor pixelColor = rayTrace(m_camera.location(),
+                                                     ray, 
+                                                     0,
+                                                     2);
+            m_canvas->setColor(i, j, pixelColor);
+    }
+
+#endif
 
 }
 
 RayColor RayWorld::rayTrace(const Vector3D& start, 
                             const Vector3D& direction, 
-                            int depth)
+                            int currDepth,
+                            int maxDepth)
 {
-    if(depth < 0)
+    if(currDepth >= maxDepth)
         return RayColor(0, 0, 0);
 
     // Find closest intersection
@@ -201,13 +236,48 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
     double reflection = hitMaterial.reflection();
     if(reflection != 0)
     { 
-            Vector3D reflectionVector = mirror(direction, intersection.normal());
+        Vector3D reflectionVector = mirror(direction, intersection.normal());
         reflectionVector.normalize();
+        // Do diffuse reflections only for first level
+        // Hardly noticable in deeper recursions
+        if(currDepth == -1)
+        {
+            // Find two perpendicular vectors to reflectionVector
+            Vector3D notTheSame = reflectionVector;
+            notTheSame.setX(notTheSame.x()+1);
+            Vector3D v1 = reflectionVector.crossProduct(notTheSame);
+            Vector3D v2 = reflectionVector.crossProduct(v1);
+            v1.normalize();
+            v2.normalize();
+
+            int rays=64;
+            for(int i=0; i<rays;++i)
+            {
+                Vector3D v = reflectionVector;
+                // Walk in circle with increasing radius, didn't do it
+                //v = v+v1*(sin((2*i*PI)/16)*(double)i/160.0);
+                //v = v+v2*(cos((2*i*PI)/16)*(double)i/160.0);
+                v = v+v1*((double)(rand()%10)/100);
+                v = v+v2*((double)(rand()%10)/100);
+                v.normalize();
+                reflectionColor += rayTrace(intersection.point() +
+                                            v*SMALL_NUMBER,
+                                            v,
+                                            currDepth+1,
+                                            maxDepth);
+            }
+            reflectionColor = reflectionColor.scaled(1.0/rays);
+
+        }
+        else
+        {
             
             reflectionColor = rayTrace(intersection.point() +
-                                       (reflectionVector*SMALL_NUMBER), 
-                                       reflectionVector, 
-                                       depth - 1);
+                                   (reflectionVector*SMALL_NUMBER), 
+                                   reflectionVector, 
+                                   currDepth + 1,
+                                   maxDepth);
+        }
     }
 
     // Calculate refraction vector
@@ -231,7 +301,8 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
         refractionColor = rayTrace(intersection.point() + 
                                    (refractionVector*SMALL_NUMBER),
                                    refractionVector,
-                                   depth - 1);
+                                   currDepth + 1,
+                                   maxDepth);
     }
     // This is the lightning model    
     diffuse *= intersection.material().diffuse();    
@@ -241,7 +312,7 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
     pixColor = hitColor.scaled(hitMaterial.ambient());
     pixColor += hitColor.scaled(diffuse);
     pixColor += reflectionColor.scaled(reflection);
-    pixColor += RayColor(255,255,255).scaled(specular);
+    pixColor += RayColor(255.0,255.0,255.0).scaled(specular);
     pixColor = pixColor.scaled(1-refraction) + refractionColor.scaled(refraction);
     return pixColor;
 }

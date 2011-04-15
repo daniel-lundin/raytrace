@@ -19,7 +19,9 @@ public:
     double b() const;
 
     void scale(double factor);
-    RayColor scaled(double scale);
+    RayColor scaled(double scale) const;
+    void clamp();
+    RayColor clamped() const;
     // Operators
     RayColor operator+(const RayColor&);
     RayColor& operator+=(const RayColor&);    
