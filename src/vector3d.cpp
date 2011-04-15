@@ -64,42 +64,40 @@ double Vector3D::length() const
 
 double Vector3D::lengthSquared() const
 {
-    return x()*x() + y()*y() + z()*z();
-
+    return m_x*m_x + m_y*m_y + m_z*m_z;
 }
-
-
 
 double Vector3D::dotProduct(const Vector3D& other) const
 {
-    return x()*other.x() + y()*other.y() + z()*other.z();
+    return m_x*other.m_x + m_y*other.m_y + m_z*other.m_z;
 }
+
 Vector3D Vector3D::crossProduct(const Vector3D& other) const
 {    
-    return Vector3D(y()*other.z() - z()*other.y(),
-                    z()*other.x() - x()*other.z(),
-                    x()*other.y() - y()*other.x());
+    return Vector3D(m_y*other.m_z - m_z*other.m_y,
+                    m_z*other.m_x - m_x*other.m_z,
+                    m_x*other.m_y - m_y*other.m_x);
 }
 
 Vector3D Vector3D::normalized() const
 {
     double l = length();
-    return Vector3D(x()/l, y()/l, z()/l);
+    return Vector3D(m_x/l, m_y/l, m_z/l);
 }
 
 const Vector3D Vector3D::operator*(double scale) const
 {
-    return Vector3D(x()*scale, y()*scale, z()*scale);
+    return Vector3D(m_x*scale, m_y*scale, m_z*scale);
 }
 
 const Vector3D Vector3D::operator+(const Vector3D& other) const
 {
-    return Vector3D(x() + other.x(), y() + other.y(), z() + other.z());
+    return Vector3D(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
 }
 
 const Vector3D Vector3D::operator-(const Vector3D& other) const
 {
-    return Vector3D(x() - other.x(), y() - other.y(), z() - other.z());
+    return Vector3D(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z);
 }
 
 std::ostream& operator<<(std::ostream& os, const Vector3D& v)
