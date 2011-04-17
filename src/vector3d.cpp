@@ -67,6 +67,18 @@ double Vector3D::lengthSquared() const
     return m_x*m_x + m_y*m_y + m_z*m_z;
 }
 
+double Vector3D::distance(const Vector3D& v1, const Vector3D& v2)
+{
+    return sqrt(Vector3D::distanceSquared(v1, v2));
+}
+
+double Vector3D::distanceSquared(const Vector3D& v1, const Vector3D& v2)
+{
+    return pow(v2.m_x - v1.m_x, 2) + 
+           pow(v2.m_y - v1.m_y, 2) + 
+           pow(v2.m_z - v1.m_z, 2); 
+}
+
 double Vector3D::dotProduct(const Vector3D& other) const
 {
     return m_x*other.m_x + m_y*other.m_y + m_z*other.m_z;

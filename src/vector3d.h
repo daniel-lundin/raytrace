@@ -2,6 +2,13 @@
 #define VECTOR3D_H
 #include <iostream>
 
+/** 
+ * \brief Class representing a vector in 3D space
+ *
+ * This class can perform basic vector operations such
+ * ass vector addition, subtraction, dot products, cross products,
+ * normalizations.
+ */
 class Vector3D
 {
 public:
@@ -20,13 +27,33 @@ public:
     Vector3D& setZ(double z);
 
     // Operator overloads
+    /**
+     * Vector scaling
+     * @param scale
+     */
     const Vector3D operator*(double scale) const;
+    /**
+     * Vector addition
+     * @params v2 - other vector
+     * @return Result of addition
+     */
     const Vector3D operator+(const Vector3D& v2) const;
     const Vector3D operator-(const Vector3D& v2) const;
 
     // Operations
+    /**
+     * Calculates length of vector.
+     *
+     */
     double length() const;
+    /**
+     * Calculates square length of vector.
+     * When comparing vector lengths, this is more efficient than
+     * the length() method since it doesn't perform any square root operation.
+     */
     double lengthSquared() const;
+    static double distance(const Vector3D& v1, const Vector3D& v2);
+    static double distanceSquared(const Vector3D& v1, const Vector3D& v2);
 
     double dotProduct(const Vector3D& other) const;
     Vector3D crossProduct(const Vector3D& other) const;
