@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility>
 #include "difference.h"
+#include "rayworld.h"
 #include "vector3d.h"
 #include "intersection.h"
 #include "raysphere.h"
@@ -10,6 +11,9 @@
 #include "translation.h"
 #include "photonintersection.h"
 #include "kdtree.h"
+#include "progress.h"
+#include "rayplane.h"
+#include "pointlight.h"
 
 using std::list;
 using std::vector;
@@ -33,6 +37,23 @@ bool box_intersection()
     return true;
 }
 
+bool photonmap_test()
+{
+    RayWorld* world = new RayWorld(new Progress());
+    world->addObject(new RayPlane(Vector3D(0,0,0), 
+                     Vector3D(0,1,0), 
+                     RayMaterial()));
+    world->addObject(new RayPlane(Vector3D(0,10,0), 
+                     Vector3D(0,-1,0), 
+                     RayMaterial()));
+    world->addLightSource(new PointLight(Vector3D(1,5,0)));
+
+    world->buildPhotonMap();
+    KDTreeNode* node = world->m_KDRoot->NNSearch(Vector3D(0,0,0));
+    cout << "Nearest: " << node->position() << endl;
+    return false;
+}
+
 bool difference_test()
 {
 
@@ -49,6 +70,8 @@ bool difference_test()
 
 bool kdtree_test()
 {
+    return false;
+#if 0
     bool success = true;
     std::vector<PhotonIntersection*> isecs;
     PhotonIntersection* i1 = new PhotonIntersection(Vector3D(0,4,-3), Vector3D());
@@ -73,6 +96,17 @@ bool kdtree_test()
 
 
     return success;
+#endif
+}
+
+bool perlin_test()
+{
+    Perlin p;
+    Vector3D v(13.4, 3.2, 1.4);
+    cout << "Displaced: " << p.displace(Vector3D(0.9,0,0), Vector3D()) << endl;
+    cout << "Displaced: " << p.displace(Vector3D(1,0,0), Vector3D()) << endl;
+    cout << "Displaced: " << p.displace(Vector3D(1.1,0,0), Vector3D()) << endl;
+    cout << "Displaced: " << p.displace(Vector3D(1.2,0,0), Vector3D()) << endl;
 }
 
 int main(int argc, char** argv)
@@ -80,8 +114,10 @@ int main(int argc, char** argv)
     list<pair<bool(*)(), string> > tests;
     tests.push_back(make_pair(&sphere_intersection, "Sphere intersection"));
     tests.push_back(make_pair(&box_intersection, "Box intersection"));
-    tests.push_back(make_pair(&difference_test, "Difference intersection"));
-    tests.push_back(make_pair(&kdtree_test, "KD-tree test"));
+    //tests.push_back(make_pair(&difference_test, "Difference intersection"));
+    //tests.push_back(make_pair(&kdtree_test, "KD-tree test"));
+    //tests.push_back(make_pair(&photonmap_test, "Photon map"));
+    tests.push_back(make_pair(&perlin_test, "Perlin noise"));
 
 
     list<pair<bool(*)(), string> >::iterator it = tests.begin();
