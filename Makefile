@@ -1,6 +1,7 @@
-CXX 	= g++
-CXXFLAGS = -Wall -O2 #-ggdb #-pg
-#CXXFLAGS += -DNUM_THREADS=2
+CXX 	= llvm-g++
+CXXFLAGS = -Wall #-O2 #-ggdb #-pg-O2 
+CXXFLAGS += -ggdb #-pg-O2 
+CXXFLAGS += -DNUM_THREADS=2
 LIBS = -lpthread 
 LDFLAGS = #-pg
 
