@@ -1,3 +1,6 @@
+/**
+ * \mainpage Raytrace documentation
+ */
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -60,7 +63,7 @@ int main(int argc, char** argv)
     }
 
     // Parse
-    Progress progress;//(80, width*height);
+    ConsoleProgress progress(60, width*height);
     RayWorld r(&progress);    
     NoLogger logger;
     Parser p(&r, &logger);
@@ -78,7 +81,11 @@ int main(int argc, char** argv)
     
     struct timeval t1, t2;
     gettimeofday(&t1, 0);
+#ifdef NUM_THREADS
+    cout << "Rendering with " << NUM_THREADS<< " threads..." << endl;
+#else
     cout << "Rendering..." << endl;
+#endif
     r.render(width, height);
     gettimeofday(&t2, 0);
     RayCanvas* canvas = r.canvas();    

@@ -2,6 +2,7 @@
 #define KDTREE_H
 #include <vector>
 #include "vector3d.h"
+#include "raycolor.h"
 
 // Forward declarations
 class PhotonIntersection;
@@ -13,12 +14,13 @@ class PhotonIntersection;
  */
 class KDTreeNode {
 public:
-    KDTreeNode(const Vector3D& pos, const Vector3D& dir);
+    KDTreeNode(const Vector3D& pos, const Vector3D& dir, const RayColor&);
 
     KDTreeNode* m_leftChild;
     KDTreeNode* m_rightChild;
     const Vector3D& position() { return m_position; }
     const Vector3D& incomingDirection() { return m_incomingDirection; }
+    const RayColor& color() { return m_color; }
     static KDTreeNode* makeTree(std::vector<PhotonIntersection*>&, int depth=0);
     void dumpTree(int depth=0);
     /**
@@ -31,9 +33,10 @@ public:
                          int depth);
 
 private:
-    void* m_data;
+    // TODO: template extra data
     Vector3D m_position;
     Vector3D m_incomingDirection;
+    RayColor m_color;
 
 };
 

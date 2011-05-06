@@ -4,20 +4,17 @@
 #include <time.h> // to seed rand
 
 #include "rayworld.h"
-#include "raysphere.h"
+#include "photonintersection.h"
+#include "pointlight.h"
 #include "rayobject.h"
 #include "rayplane.h"
 #include "math.h"
 #include "raycolor.h"
 #include "raymaterial.h"
-#include "raytriangle.h"
-#include "raycylinder.h"
 #include "raybox.h"
-#include "translation.h"
-#include "rotation.h"
-#include "difference.h"
 #include "utils.h"
 #include "progress.h"
+#include "kdtree.h"
 
 using namespace std;
 
@@ -80,29 +77,9 @@ void* pixelTrace(void* threadData)
 }
 
 RayWorld::RayWorld(Progress* progress)
-    : m_progress(progress)
+    : m_KDRoot(0),m_progress(progress)
 {    
     m_canvas = 0;
-}
-
-void RayWorld::addObject(RayObject* object)
-{
-    m_objects.push_back(object);
-}
-
-void RayWorld::addLightSource(PointLight* light) 
-{
-    m_lights.push_back(light);
-}
-
-void RayWorld::clearScene()
-{
-    m_objects.clear();
-}
-
-void RayWorld::setCamera(const RayCamera& camera)
-{
-    m_camera = camera;
 }
 
 void RayWorld::render(int pixelWidth, int pixelHeight)
@@ -114,6 +91,8 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
                              pixelWidth, 
                              pixelHeight,
                              18, 0.31, 8);
+
+    //buildPhotonMap();
 
 #ifdef NUM_THREADS
     // Divide width between threads, the last thread gets the remaindor
@@ -222,12 +201,17 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
         // Add specular lightning
         Vector3D reflectionVector = mirror(direction, intersection.normal());
         reflectionVector.normalize();
+        Vector3D halfway = direction*-1 + lightRay;
+        halfway.normalize();
 
-        double specularShading = reflectionVector.dotProduct(lightRay);
-        if(specularShading < 0)
-            specularShading = 0;
-        specularShading = pow(specularShading, hitMaterial.specPower());
-        specular = min(specularShading, 1.0);
+
+        //double specShading = exp(-pow(0.1*intersection.normal().dotProduct(halfway),2));
+        double specShading = intersection.normal().dotProduct(halfway);
+        //double specShading = reflectionVector.dotProduct(lightRay);
+        if(specShading < 0)
+            specShading = 0;
+        specShading = pow(specShading, hitMaterial.specPower());
+        specular = min(specShading, 1.0);
     }
 
 
@@ -315,6 +299,44 @@ RayColor RayWorld::rayTrace(const Vector3D& start,
     pixColor += RayColor(255.0,255.0,255.0).scaled(specular);
     pixColor = pixColor.scaled(1-refraction) + refractionColor.scaled(refraction);
     return pixColor;
+    // Add color from photon map
+
+    //pixColor = RayColor();
+#if 1
+    PhotonIntersection* photon = this->nearestNeighbour(intersection.point());
+    if(Vector3D::distance(photon->position, intersection.point()) < 0.02)
+    {
+        double dot = intersection.normal().dotProduct(photon->incomingDirection*-1);
+        pixColor = RayColor(255,255,255).scaled(dot);
+    }
+    //return RayColor();
+#endif
+#if 1
+    double radius = 1;
+    std::vector<PhotonIntersection*> photons;
+    this->nearestNeighbours(intersection.point(), radius, photons);
+    if(photons.size() == 0)
+    {
+        return pixColor;
+        return RayColor(255,0,0);//pixColor;
+    }
+
+    RayColor photonColor;
+    for(int i=0; i<photons.size();++i)
+    {
+        double photonAmount = intersection.normal().dotProduct(photons[i]->incomingDirection*-1);
+        photonAmount *= 1 - Vector3D::distance(photons[i]->position, intersection.point())/radius;
+        //photonAmount *= intersection.material().diffuse();
+        photonAmount = max(0.0, photonAmount);
+        if(photonAmount > 1.0)
+            throw std::exception();
+        photonColor += photons[i]->color.scaled(photonAmount);
+    }
+    pixColor += photonColor.scaled(1.0/photons.size());//(PI*pow(radius, 2)));
+    //cout << Vector3D::distance(node->position(), intersection.point()) << endl;
+    return pixColor;
+#endif
+
 }
 
 bool RayWorld::closestIntersection(const Vector3D& start, const Vector3D& direction, Intersection& closest)
@@ -343,7 +365,123 @@ bool RayWorld::closestIntersection(const Vector3D& start, const Vector3D& direct
     return true;
 }
 
+void RayWorld::addObject(RayObject* object)
+{
+    m_objects.push_back(object);
+}
+
+void RayWorld::addLightSource(PointLight* light) 
+{
+    m_lights.push_back(light);
+}
+
+void RayWorld::clearScene()
+{
+    m_objects.clear();
+}
+
+void RayWorld::setCamera(const RayCamera& camera)
+{
+    m_camera = camera;
+}
 RayCanvas* RayWorld::canvas()
 {
     return m_canvas;
+}
+
+
+PhotonIntersection* RayWorld::nearestNeighbour(const Vector3D& point)
+{
+    double closest = 99999999.0;
+    PhotonIntersection* best = 0;
+    int size = m_photonIsecs.size();
+    for(int i=0;i<size;++i)
+    {
+        double dis = Vector3D::distanceSquared(m_photonIsecs[i]->position, point); 
+        if(dis < closest)
+        {
+            closest = dis;
+            best = m_photonIsecs[i];
+        }
+    }
+    return best;
+}
+
+void RayWorld::nearestNeighbours(const Vector3D& point, 
+                                 double r, 
+                                 std::vector<PhotonIntersection*>& neighbours)
+{
+    
+    int size = m_photonIsecs.size();
+    for(int i=0;i<size;++i)
+    {
+        double dis = Vector3D::distance(m_photonIsecs[i]->position, point); 
+        if(dis < r)
+        {
+            neighbours.push_back(m_photonIsecs[i]);
+        }
+    }
+}
+
+void RayWorld::photonTrace(const Vector3D& start, 
+                           const Vector3D& dir,
+                           const RayColor& color,
+                           int depth)
+{
+    if(depth == 0)
+        return;
+    Intersection intersection;
+    if(!closestIntersection(start, dir, intersection))
+    {
+        return;
+    }
+    // Todo: A real BDRF!
+
+    double prob = (rand() % 1000) / 1000.0;
+    double dotangle = dir.dotProduct(intersection.normal()*-1);
+
+    //if(prob > dotangle)
+    //    return;
+    m_photonIsecs.push_back(new PhotonIntersection(intersection.point(), 
+                                                   dir,
+                                                   color));
+
+    double vx = (rand() % 1000)/500.0 - 1;
+    double vy = (rand() % 1000)/500.0 - 1;
+    double vz = (rand() % 1000)/500.0 - 1;
+    Vector3D reflection = mirror(dir, intersection.normal());//Vector3D(vx, vy, vz);//
+    photonTrace(intersection.point() + reflection*SMALL_NUMBER, 
+                reflection, 
+                intersection.material().color().scaled(0.5),
+                depth-1);
+
+}
+
+void RayWorld::buildPhotonMap()
+{
+    std::vector<PointLight*>::iterator it = m_lights.begin();
+    std::vector<PointLight*>::iterator end = m_lights.end();
+    while(it != end)
+    {
+        // Thousand photon
+        int noPhotons = 1000;
+        for(int i=0;i<noPhotons;++i)
+        {
+            double vx = (rand() % 1000)/500.0 - 1;
+            double vy = (rand() % 1000)/500.0 - 1;
+            double vz = (rand() % 1000)/500.0 - 1;
+            Vector3D ray(vx,vy,vz);
+            ray.normalize();
+            double x = (rand() % 1000)/1000.0 - 0.5;
+            double y = (rand() % 1000)/1000.0 - 0.5;
+            double z = (rand() % 1000)/1000.0 - 0.5;
+            Vector3D p((*it)->position().x() + x, 
+                       (*it)->position().y() + y, 
+                       (*it)->position().z() + z);
+            photonTrace(p, ray, RayColor(255,255,255), 3);
+        }
+        ++it;
+    }
+    cout << "PhotonMap size: " << m_photonIsecs.size() << endl;
+    //m_KDRoot = KDTreeNode::makeTree(m_photonIsecs);
 }

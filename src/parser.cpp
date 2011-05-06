@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "parser.h"
+#include "pointlight.h"
 #include "rayworld.h"
 #include "raysphere.h"
 #include "raycylinder.h"
@@ -24,6 +25,13 @@ using std::runtime_error;
 using std::istringstream;
 using std::ostringstream;
 using std::make_pair;
+
+void throwParseDoubleError(int lineno)
+{
+    ostringstream oss;
+    oss << "Error parsing double at line " << lineno;
+    throw runtime_error(oss.str());
+}
 
 void throwParseError(int lineno, const std::string& str = "no info")
 {
@@ -51,13 +59,13 @@ bool Parser::parse(istream& stream)
             istringstream iss(line);
             string token;
             iss >> token;
-	    if (token[0] == '.')
+            if (token[0] == '.')
             {
                 string entityType = token.substr(1, -1);    			
                 ParseEntity* ent = new ParseEntity(entityType, m_current);
                 m_current->addEntity(ent);
                 m_current = ent;
-	    }
+            }
             else if(token == "next")
             {
                 m_current = m_current->parent();
@@ -156,13 +164,13 @@ RayObject* Parser::evaluateSphereEntity(ParseEntity* entity)
         {
             double x, y, z;
             if((iss >> x).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
 
             if((iss >> y).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
 
             if((iss >> z).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
             
             pos = Vector3D(x, y, z);
            
@@ -170,7 +178,7 @@ RayObject* Parser::evaluateSphereEntity(ParseEntity* entity)
         else if (token == "radius:") 
         {
             if((iss >> radius).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
         }
         ++it;
     }
@@ -187,16 +195,13 @@ RayObject* Parser::evaluateSphereEntity(ParseEntity* entity)
             throw runtime_error("Sphere has unknown child.");
         m = evaluateMateriaEntity(material);
     }
-
     
-    // Note: this method should probably return the sphere instead
-    // in case transformations, intersections etc should ever be implemented
     ostringstream oss;
     oss << "Adding sphere at " << pos.x() << ", " <<pos.y() << ", " << pos.z();
     oss << "Radius: " << radius;
     m_logger->info(oss.str());
 
-    return new RaySphere(pos, radius, m);
+    //return new RaySphere(pos, radius, m);
     return new RandomNormalDisplacer(new RaySphere(pos, radius, m), 0.06);
 }
 
@@ -222,13 +227,13 @@ RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)
         {
             double x, y, z;
             if((iss >> x).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
 
             if((iss >> y).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
 
             if((iss >> z).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
             
             pos = Vector3D(x, y, z);
            
@@ -237,13 +242,13 @@ RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)
         {
             double x, y, z;
             if((iss >> x).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
 
             if((iss >> y).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
 
             if((iss >> z).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
             xrot = x;
             yrot = y;
             zrot = z;
@@ -251,12 +256,12 @@ RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)
         else if(token == "radius:")
         {
             if((iss >> radius).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
         }
         else if(token == "length:")
         {
             if((iss >> length).fail())
-                throwParseError(it->first);
+                throwParseDoubleError(it->first);
         }
     }
 
@@ -267,7 +272,7 @@ RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)
     {
         ParseEntity* material = *children.begin();
         if(material->type() != MATERIAL)
-            throw runtime_error("Sphere has unknown child.");
+            throw runtime_error("Cylinder has unknown child.");
         m = evaluateMateriaEntity(material);
     }
 
@@ -297,13 +302,13 @@ RayObject* Parser::evaluateBoxEntity(ParseEntity* entity)
         double x,y,z;
 
         if((iss >> x).fail())
-            throwParseError(it->first);
+            throwParseDoubleError(it->first);
 
         if((iss >> y).fail())
-            throwParseError(it->first);
+            throwParseDoubleError(it->first);
 
         if((iss >> z).fail())
-            throwParseError(it->first);
+            throwParseDoubleError(it->first);
         if(token == "size:")
         {
             xsize = x;
@@ -353,19 +358,19 @@ RayObject* Parser::evaluatePlaneEntity(ParseEntity* entity)
 
         double x, y, z;
         if((iss >> x).fail())
-            throwParseError(it->first);
+            throwParseDoubleError(it->first);
 
         if((iss >> y).fail())
-            throwParseError(it->first);
+            throwParseDoubleError(it->first);
 
         if((iss >> z).fail())
-            throwParseError(it->first);
+            throwParseDoubleError(it->first);
         if(token == "pos:")
             pos = Vector3D(x,y,z);
         else if(token == "normal:")
             normal = Vector3D(x,y,z);
         else
-            throwParseError(it->first); 
+            throwParseError(it->first, "Unknown attribute '" + token + "'"); 
         ++it;
     }
 
@@ -380,6 +385,7 @@ RayObject* Parser::evaluatePlaneEntity(ParseEntity* entity)
 
     RayMaterial m = evaluateMateriaEntity(material);
 
+    return new RandomNormalDisplacer(new RayPlane(pos, normal, m), 0.03);
     return new RayPlane(pos, normal, m);
 }
 

@@ -20,12 +20,15 @@ bool zsort(PhotonIntersection* l, PhotonIntersection* r)
     return l->position.z() < r->position.z();
 }
 
-KDTreeNode::KDTreeNode(const Vector3D& pos, const Vector3D& dir)
+KDTreeNode::KDTreeNode(const Vector3D& pos, 
+                       const Vector3D& dir,
+                       const RayColor& color)
     : 
       m_leftChild(0),
       m_rightChild(0),
       m_position(pos),
-      m_incomingDirection(dir)
+      m_incomingDirection(dir),
+      m_color(color)
 {
 }
 
@@ -48,7 +51,8 @@ KDTreeNode* KDTreeNode::makeTree(std::vector<PhotonIntersection*>& isecs,
     PhotonIntersection* median = isecs[medianIndex];
 
     KDTreeNode* node = new KDTreeNode(median->position, 
-                                      median->incomingDirection);
+                                      median->incomingDirection,
+                                      median->color);
     std::vector<PhotonIntersection*> lefts;//(medianIndex);
     std::vector<PhotonIntersection*> rights;//(medianIndex);
     // Copy everthing smaller than medianIndex to lefts
