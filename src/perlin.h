@@ -5,12 +5,12 @@
 class Perlin
 {
 public:
-    void generate1();
+    void generate1(int seed=0);
     void generate2();
 
-    Vector3D displace(const Vector3D& v, const Vector3D& p);
+    Vector3D displace(const Vector3D& p, const Vector3D& v, double intensity, double scale);
 private:
-    double m_noise[1000];
+    Vector3D m_gradients[1000];
 };
 
 #endif
