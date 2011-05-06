@@ -67,6 +67,10 @@ double Vector3D::lengthSquared() const
     return m_x*m_x + m_y*m_y + m_z*m_z;
 }
 
+double Vector3D::distanceFrom(const Vector3D& p) const
+{
+    return sqrt(Vector3D::distanceSquared(*this, p));
+}
 double Vector3D::distance(const Vector3D& v1, const Vector3D& v2)
 {
     return sqrt(Vector3D::distanceSquared(v1, v2));
@@ -95,6 +99,11 @@ Vector3D Vector3D::normalized() const
 {
     double l = length();
     return Vector3D(m_x/l, m_y/l, m_z/l);
+}
+
+Vector3D Vector3D::scaled(double factor) const
+{
+    return Vector3D(m_x*factor, m_y*factor, m_z*factor);
 }
 
 const Vector3D Vector3D::operator*(double scale) const

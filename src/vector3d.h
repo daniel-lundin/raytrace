@@ -52,6 +52,7 @@ public:
      * the length() method since it doesn't perform any square root operation.
      */
     double lengthSquared() const;
+    double distanceFrom(const Vector3D& p) const;
     static double distance(const Vector3D& v1, const Vector3D& v2);
     static double distanceSquared(const Vector3D& v1, const Vector3D& v2);
 
@@ -60,6 +61,7 @@ public:
 
     Vector3D& normalize();
     Vector3D normalized() const;
+    Vector3D scaled(double factor) const;
 
 
     friend std::ostream& operator<<(std::ostream& os, const Vector3D&);
