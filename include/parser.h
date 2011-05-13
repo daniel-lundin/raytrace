@@ -19,7 +19,6 @@ class RayObject;
 class PointLight;
 
 
-
 class Parser : public ParseEntity
 {
 public:
@@ -31,17 +30,19 @@ public:
     // ParseEntity overrides
     void addEntity(ParseEntity* entity);
     ParseEntity* parent();
-    void dump();
 private:
     RayObject* evaluateSphereEntity(ParseEntity* entity);
+#if 0
     RayObject* evaluateCylinderEntity(ParseEntity* entity);
     RayObject* evaluatePlaneEntity(ParseEntity* entity);
     RayObject* evaluateDifferenceEntity(ParseEntity* entity);
     RayObject* evaluateTranslationEntity(ParseEntity* entity);
     PointLight* evaluateLightEntity(ParseEntity* entity);
     RayObject* evaluateBoxEntity(ParseEntity* entity);
-    RayMaterial evaluateMateriaEntity(ParseEntity* entity);
+#endif
+    PointLight* evaluateLightEntity(ParseEntity* entity);
     RayCamera evaluateCameraEntity(ParseEntity* entity);
+    RayMaterial evaluateMateriaEntity(ParseEntity* entity);
     // members
     RayWorld* m_world;
     ParseEntity* m_current;
