@@ -15,14 +15,15 @@ using std::pair;
 class RayWorld;
 
 enum EntityType {SPHERE, 
-                    CYLINDER, 
-                    PLANE, 
-                    BOX, 
-                    CAMERA,
-                    MATERIAL, 
-                    LIGHT, 
-                    DIFFERENCE,
-                    TRANSLATION};
+                 CYLINDER, 
+                 PLANE, 
+                 BOX, 
+                 CAMERA,
+                 MATERIAL, 
+                 LIGHT, 
+                 DIFFERENCE,
+                 CHECKER,
+                 NORMAL_MODIFIER};
 
 struct ParseEntity
 {

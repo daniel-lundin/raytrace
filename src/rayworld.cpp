@@ -133,15 +133,13 @@ void RayWorld::render(int pixelWidth, int pixelHeight)
 #else
     for(int i=0;i<pixelWidth;++i) for(int j=0;j<pixelHeight;++j)
     {
-            Vector3D ray = m_canvas->vectorThrough(i, j);
-
-            RayColor pixelColor = rayTrace(m_camera.location(),
+        Vector3D ray = m_canvas->vectorThrough(i, j);
+        RayColor pixelColor = rayTrace(m_camera.location(),
                                                      ray, 
                                                      0,
                                                      2);
-            m_canvas->setColor(i, j, pixelColor);
+        m_canvas->setColor(i, j, pixelColor);
     }
-
 #endif
 
 }

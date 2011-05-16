@@ -3,8 +3,10 @@
 #include <vector>
 #include <math.h>
 
-CheckerTexture::CheckerTexture(RayObject* object)
-    : m_object(object)
+CheckerTexture::CheckerTexture(RayObject* object, 
+                               const RayColor& c1,
+                               const RayColor& c2)
+    : m_object(object), m_c1(c1), m_c2(c2)
 {
 }
 
@@ -20,9 +22,9 @@ bool CheckerTexture::intersects(const Vector3D& start,
     while(it != end)
     {
         if((lround(it->point().x()) + lround(it->point().z()))%2)
-            it->material().setColor(RayColor(0,0,0));
+            it->material().setColor(m_c1);
         else
-            it->material().setColor(RayColor(255,255,255));
+            it->material().setColor(m_c2);
         ++it;
     }
     return true;

@@ -24,7 +24,7 @@ bool RandomNormalDisplacer::intersects(const Vector3D& start,
     std::vector<Intersection>::iterator end = isecs.end();
     while(it != end)
     {
-        it->setNormal(m_perlin->displace(it->point(), it->normal(), .2, 0.3));
+        it->setNormal(m_perlin->displace(it->point(), it->normal(), m_amount, 0.3));
         ++it;
     }
     return true;

@@ -2,10 +2,14 @@
 #define ROTATION_H
 #include "rayobject.h"
 
+// Forward declarations
+class Vector3D;
+
 class Rotation : public RayObject
 {
 public:
     Rotation(RayObject* obj, double xrot, double yrot, double zrot);
+    Rotation(RayObject* obj, const Vector3D&);
 
     bool intersects(const Vector3D& start, 
                     const Vector3D& direction, 

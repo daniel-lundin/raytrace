@@ -31,18 +31,20 @@ public:
     void addEntity(ParseEntity* entity);
     ParseEntity* parent();
 private:
-    RayObject* evaluateSphereEntity(ParseEntity* entity);
-#if 0
-    RayObject* evaluateCylinderEntity(ParseEntity* entity);
-    RayObject* evaluatePlaneEntity(ParseEntity* entity);
     RayObject* evaluateDifferenceEntity(ParseEntity* entity);
-    RayObject* evaluateTranslationEntity(ParseEntity* entity);
-    PointLight* evaluateLightEntity(ParseEntity* entity);
+    RayObject* evaluatePlaneEntity(ParseEntity* entity);
+    RayObject* evaluateCylinderEntity(ParseEntity* entity);
     RayObject* evaluateBoxEntity(ParseEntity* entity);
-#endif
+    RayObject* evaluateSphereEntity(ParseEntity* entity);
     PointLight* evaluateLightEntity(ParseEntity* entity);
     RayCamera evaluateCameraEntity(ParseEntity* entity);
-    RayMaterial evaluateMateriaEntity(ParseEntity* entity);
+    RayMaterial evaluateMaterialEntity(ParseEntity* entity);
+
+    // Utilities
+    RayObject* parseRotation(RayObject*, ParseEntity*);
+    RayObject* parseTranslation(RayObject*, ParseEntity*);
+    RayObject* parseNormalModifier(RayObject*, ParseEntity*);
+    RayObject* parseCheckerTexture(RayObject*, ParseEntity*);
     // members
     RayWorld* m_world;
     ParseEntity* m_current;

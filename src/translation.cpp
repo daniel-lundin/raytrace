@@ -5,6 +5,11 @@ Translation::Translation(RayObject* obj, double x, double y, double z)
 {
 }
 
+Translation::Translation(RayObject* obj, const Vector3D& pos)
+    : m_obj(obj), m_x(pos.x()), m_y(pos.y()), m_z(pos.z())
+{
+}
+
 bool Translation::intersects(const Vector3D& start, 
                             const Vector3D& direction, 
                             std::vector<Intersection>& isecs)
