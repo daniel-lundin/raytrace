@@ -1,6 +1,6 @@
 .camera
-    location: 0 5 -5 
-    lookat: 0 0 2
+    location: 0 15 -5 
+    lookat: 0 0 12
     up: 0 1 0
 next
 
@@ -8,31 +8,54 @@ next
     pos: 30 30 -30
 next
 
+
 .plane
-    pos: 0 -1 0
+    pos: 0 0 14
+    normal: 0 0 -1
+    .material
+        color: 160 100 100
+        ambient: 0.2
+        diffuse: 0.8
+        specular: 0.8
+        specpower: 30
+    next
+next
+
+.plane
+    pos: 0 0 0
     normal: 0 1 0
     .material
-        color: 80 180 180
-        ambient: 0.1
+        color: 160 160 160
+        ambient: 0.2
         diffuse: 0.8
-        reflection: 0.4
+        specular: 0.8
+        specpower: 30
+    next
+    .checker
+        c1: 100 100 100
+        c2: 200 200 200
     next
 next
 
 .sphere
-    pos: 0 0 12
+    pos: 2 1 12
     radius: 1
     .material
-        color: 100 100 100
+        color: 160 100 100
         ambient: 0.2
-	diffuse: 0.8
-	specular: 0.8
-	specpower: 30
-	reflection: 0
-	refraction: 0
-	refractionindex: 0		
+        diffuse: 0.8
     next
 next
 
-
-
+.sphere
+    pos: 0 .5 12
+    radius: .5
+    .material
+        color: 160 100 100
+        ambient: 0.2
+        diffuse: 0.8
+        specular: 0.8
+        specpower: 30
+        reflection: 0.7
+    next
+next
