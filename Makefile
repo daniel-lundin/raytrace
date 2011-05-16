@@ -1,9 +1,7 @@
-CXX 	= llvm-g++
-CXXFLAGS = -Wall #-O2 #-ggdb #-pg-O2 
-CXXFLAGS += -ggdb #-pg-O2 
+CXX 	= g++
+CXXFLAGS = -Wall -O2 -Iinclude
 CXXFLAGS += -DNUM_THREADS=2
 LIBS = -lpthread 
-LDFLAGS = #-pg
 
 allobjs = $(patsubst %.cpp, %.o, $(wildcard src/*.cpp))
 mainobjs = $(filter-out src/testmain.o, $(allobjs))

@@ -26,22 +26,8 @@ using std::istringstream;
 using std::ostringstream;
 using std::make_pair;
 
-void throwParseDoubleError(int lineno)
-{
-    ostringstream oss;
-    oss << "Error parsing double at line " << lineno;
-    throw runtime_error(oss.str());
-}
-
-void throwParseError(int lineno, const std::string& str = "no info")
-{
-    ostringstream oss;
-    oss << "Syntax error at line " << lineno << ": " << str;
-    throw runtime_error(oss.str());
-}
-
 Parser::Parser(RayWorld* world, Logger* logger)
-    : ParseEntity("Parser", this), m_world(world), m_logger(logger)
+    : ParseEntity(this, "Parser"), m_world(world), m_logger(logger)
 {
 
 }
@@ -62,13 +48,13 @@ bool Parser::parse(istream& stream)
             if (token[0] == '.')
             {
                 string entityType = token.substr(1, -1);    			
-                ParseEntity* ent = new ParseEntity(entityType, m_current);
+                ParseEntity* ent = new ParseEntity(m_current, entityType);
                 m_current->addEntity(ent);
                 m_current = ent;
             }
             else if(token == "next")
             {
-                m_current = m_current->parent();
+                m_current = m_current->parent;
             }
             else
             {
@@ -82,11 +68,11 @@ bool Parser::parse(istream& stream)
     for(size_t i = 0; i < entCount; ++i)
     {
         ParseEntity* e = m_entities[i];
-        if (e->type() == LIGHT) 
+        if (e->type == LIGHT) 
         {
             m_world->addLightSource(evaluateLightEntity(e));
         }
-        else if(e->type() == CAMERA)
+        else if(e->type == CAMERA)
         {
             m_world->setCamera(evaluateCameraEntity(e));
         }
@@ -100,16 +86,16 @@ bool Parser::parse(istream& stream)
 
 RayObject* Parser::evaluateEntity(ParseEntity* entity)
 {
-    switch(entity->type())
+    switch(entity->type)
     {
         case SPHERE:
             return evaluateSphereEntity(entity);
             break;
-        case CYLINDER:
-            return evaluateCylinderEntity(entity);
-            break;
         case BOX:
             return evaluateBoxEntity(entity);
+            break;
+        case CYLINDER:
+            return evaluateCylinderEntity(entity);
             break;
         case PLANE:
             return evaluatePlaneEntity(entity);
@@ -117,11 +103,8 @@ RayObject* Parser::evaluateEntity(ParseEntity* entity)
         case DIFFERENCE:
             return evaluateDifferenceEntity(entity);
             break;
-        case TRANSLATION:
-            return evaluateTranslationEntity(entity);
-            break;
         default:
-            throw std::exception();
+            throw std::runtime_error("Unknown entity type");
             break;
     }
 }
@@ -133,405 +116,179 @@ void Parser::addEntity(ParseEntity* entity)
 
 ParseEntity* Parser::parent()
 {
-    throw exception();
-}
-
-void Parser::dump()
-{
-    vector<ParseEntity*>::iterator it = m_entities.begin();
-    vector<ParseEntity*>::iterator end = m_entities.end();
-    while(it != end)
-    {
-        (*it)->dump();
-        ++it;
-    }
+    throw std::runtime_error("Parser has not parent");
 }
 
 RayObject* Parser::evaluateSphereEntity(ParseEntity* entity)
 {
-    Vector3D pos;
     double radius; 
+    std::map<string, double>& valueTypes = entity->valueTypes;
 
-    list<pair<int, string> >::iterator it = entity->lines().begin();    
-    list<pair<int, string> >::iterator end = entity->lines().end();    
+    if(valueTypes.find("radius") == valueTypes.end())
+        throw std::runtime_error("sphere missing radius");
+    radius = valueTypes["radius"];
 
-    while (it != end)
-    {
-        istringstream iss(it->second);
-        string token;
-        iss >> token;
-        if(token == "pos:")
-        {
-            double x, y, z;
-            if((iss >> x).fail())
-                throwParseDoubleError(it->first);
-
-            if((iss >> y).fail())
-                throwParseDoubleError(it->first);
-
-            if((iss >> z).fail())
-                throwParseDoubleError(it->first);
-            
-            pos = Vector3D(x, y, z);
-           
-        }
-        else if (token == "radius:") 
-        {
-            if((iss >> radius).fail())
-                throwParseDoubleError(it->first);
-        }
-        ++it;
-    }
-    // For now sphere can only have one children and that is material
-    // Make sure that is the case
-    RayMaterial m;
-    list<ParseEntity*>& children = entity->children();
-
-    if(children.size() == 1)
-    {
-        
-        ParseEntity* material = *children.begin();
-        if(material->type() != MATERIAL)
-            throw runtime_error("Sphere has unknown child.");
-        m = evaluateMateriaEntity(material);
-    }
-    
-    ostringstream oss;
-    oss << "Adding sphere at " << pos.x() << ", " <<pos.y() << ", " << pos.z();
-    oss << "Radius: " << radius;
-    m_logger->info(oss.str());
-
-    //return new RaySphere(pos, radius, m);
-    return new RandomNormalDisplacer(new RaySphere(pos, radius, m), 0.06);
-}
-
-RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)
-{
-    Vector3D pos;
-    double xrot = 0;
-	double yrot = 0;
-	double zrot = 0;
-    double radius = 0;
-	double length = 0;
-
-    list<pair<int, string> >::iterator it = entity->lines().begin();    
-    list<pair<int, string> >::iterator end = entity->lines().end();    
-
-    for(;it!=end;++it)
-    {
-
-        istringstream iss(it->second);
-        string token;
-        iss >> token;
-        if(token == "pos:")
-        {
-            double x, y, z;
-            if((iss >> x).fail())
-                throwParseDoubleError(it->first);
-
-            if((iss >> y).fail())
-                throwParseDoubleError(it->first);
-
-            if((iss >> z).fail())
-                throwParseDoubleError(it->first);
-            
-            pos = Vector3D(x, y, z);
-           
-        }
-        else if(token == "rot:")
-        {
-            double x, y, z;
-            if((iss >> x).fail())
-                throwParseDoubleError(it->first);
-
-            if((iss >> y).fail())
-                throwParseDoubleError(it->first);
-
-            if((iss >> z).fail())
-                throwParseDoubleError(it->first);
-            xrot = x;
-            yrot = y;
-            zrot = z;
-        } 
-        else if(token == "radius:")
-        {
-            if((iss >> radius).fail())
-                throwParseDoubleError(it->first);
-        }
-        else if(token == "length:")
-        {
-            if((iss >> length).fail())
-                throwParseDoubleError(it->first);
-        }
-    }
 
     RayMaterial m;
-    list<ParseEntity*>& children = entity->children();
-
-    if(children.size() == 1)
+    if(entity->children.find(MATERIAL) != entity->children.end())
     {
-        ParseEntity* material = *children.begin();
-        if(material->type() != MATERIAL)
-            throw runtime_error("Cylinder has unknown child.");
-        m = evaluateMateriaEntity(material);
+        m = evaluateMaterialEntity(entity->children[MATERIAL]);
     }
 
-    RayObject* o = new RayCylinder(radius, length, m);
-    o = new Rotation(o, xrot, yrot, zrot);
-    o = new Translation(o, pos.x(), pos.y(), pos.z());
-    return o;
-}
+    RayObject* sphere = new RaySphere(Vector3D(), radius, m);
+    sphere = parseNormalModifier(sphere, entity);
+    sphere = parseRotation(sphere, entity);
+    sphere = parseTranslation(sphere, entity);
 
-RayObject* Parser::evaluateBoxEntity(ParseEntity* entity)
-{
-    Vector3D pos;
-	Vector3D rot;
-    double xsize = 0;
-	double ysize = 0;
-	double zsize = 0;
-
-    list<pair<int, string> >::iterator it = entity->lines().begin();    
-    list<pair<int, string> >::iterator end = entity->lines().end();    
-
-    while (it != end)
-    {
-        istringstream iss(it->second);
-        string token;
-        
-        iss >> token;
-        double x,y,z;
-
-        if((iss >> x).fail())
-            throwParseDoubleError(it->first);
-
-        if((iss >> y).fail())
-            throwParseDoubleError(it->first);
-
-        if((iss >> z).fail())
-            throwParseDoubleError(it->first);
-        if(token == "size:")
-        {
-            xsize = x;
-            ysize = y;
-            zsize = z;
-        }
-        else if(token == "pos:")
-        {
-            pos = Vector3D(x,y,z);
-        }
-		else if(token == "rot:")
-		{
-			rot = Vector3D(x, y, z);
-		}
-        ++it;
-    }
-
-    RayMaterial m;
-    list<ParseEntity*>& children = entity->children();
-
-    if(children.size() == 1)
-    {
-        ParseEntity* material = *children.begin();
-        if(material->type() != MATERIAL)
-            throw runtime_error("Sphere has unknown child.");
-        m = evaluateMateriaEntity(material);
-    }
-    RayObject* o = new RayBox(xsize, ysize, zsize, m);
-	o = new Rotation(o, rot.x(), rot.y(), rot.z());
-    o = new Translation(o, pos.x(), pos.y(), pos.z());
-    return o;
+    return sphere;
 }
 
 RayObject* Parser::evaluatePlaneEntity(ParseEntity* entity)
 {
     Vector3D pos, normal;
 
-    list<pair<int, string> >::iterator it = entity->lines().begin();    
-    list<pair<int, string> >::iterator end = entity->lines().end();    
+    std::map<string, Vector3D>& coordTypes = entity->coordTypes;
+    pos = coordTypes["pos"];
+    normal = coordTypes["normal"];
 
-    while (it != end)
+    RayMaterial m;
+    if(entity->children.find(MATERIAL) != entity->children.end())
     {
-        istringstream iss(it->second);
-        string token;
-
-        iss >> token;
-
-        double x, y, z;
-        if((iss >> x).fail())
-            throwParseDoubleError(it->first);
-
-        if((iss >> y).fail())
-            throwParseDoubleError(it->first);
-
-        if((iss >> z).fail())
-            throwParseDoubleError(it->first);
-        if(token == "pos:")
-            pos = Vector3D(x,y,z);
-        else if(token == "normal:")
-            normal = Vector3D(x,y,z);
-        else
-            throwParseError(it->first, "Unknown attribute '" + token + "'"); 
-        ++it;
+        m = evaluateMaterialEntity(entity->children[MATERIAL]);
     }
 
-    // For now sphere can only have one children and that is material
-    // Make sure that is the case
-    list<ParseEntity*>& children = entity->children();
-    if(children.size() != 1)
-        throw runtime_error("Plane missing material definition");
-    ParseEntity* material = *children.begin();
-    if(material->type() != MATERIAL)
-        throw runtime_error("Plane missing material definition");
+    RayObject* plane = new RayPlane(pos, normal, m);
+    plane = parseNormalModifier(plane, entity);
+    plane = parseCheckerTexture(plane, entity);
+    return plane;
+}
+RayObject* Parser::evaluateCylinderEntity(ParseEntity* entity)
+{
+    double radius = 0;
+	double length = 0;
 
-    RayMaterial m = evaluateMateriaEntity(material);
+    std::map<string, double>& valueTypes = entity->valueTypes;
+    radius = valueTypes["radius"];
+    length = valueTypes["length"];
 
-    return new RandomNormalDisplacer(new RayPlane(pos, normal, m), 0.03);
-    return new RayPlane(pos, normal, m);
+    RayMaterial m;
+    if(entity->children.find(MATERIAL) != entity->children.end())
+    {
+        m = evaluateMaterialEntity(entity->children[MATERIAL]);
+    }
+
+    RayObject* cyl = new RayCylinder(radius, length, m);
+    cyl = parseRotation(cyl, entity);
+    cyl = parseTranslation(cyl, entity);
+    cyl = parseNormalModifier(cyl, entity);
+    return cyl;
 }
 
 RayObject* Parser::evaluateDifferenceEntity(ParseEntity* entity)
 {
-    list<ParseEntity*>& children = entity->children();
+    std::map<EntityType, ParseEntity*>& children = entity->children;
     
     if(children.size() < 2)
         throw std::runtime_error("difference must have at least two children");
 
     Difference* diff;
-    list<ParseEntity*>::iterator it = children.begin();
-    list<ParseEntity*>::iterator end = children.end();
+    std::map<EntityType, ParseEntity*>::iterator it = children.begin();
+    std::map<EntityType, ParseEntity*>::iterator end = children.end();
 
-    RayObject* r1 = evaluateEntity(*it);
+    RayObject* r1 = evaluateEntity(it->second);
     ++it;
-    RayObject* r2 = evaluateEntity(*it);
+    RayObject* r2 = evaluateEntity(it->second);
     diff = new Difference(r1, r2);
     ++it;
     while(it != end)
     {
-        diff = new Difference(diff, evaluateEntity(*it)); 
+        diff = new Difference(diff, evaluateEntity(it->second)); 
         ++it;
     }     
     return diff;
 }
 
-RayObject* Parser::evaluateTranslationEntity(ParseEntity* entity)
+
+RayObject* Parser::evaluateBoxEntity(ParseEntity* entity)
 {
-    list<pair<int, string> >::iterator it = entity->lines().begin();
+    Vector3D pos;
+	Vector3D rot;
+    Vector3D size;
 
-    istringstream iss(it->second);
-    string token;
-    iss >> token;
+    std::map<string, Vector3D>& coordTypes = entity->coordTypes;
 
-    double x,y,z;
+    size = coordTypes["size"];
 
-    if((iss >> x).fail())
-        throwParseError(it->first);
+    RayMaterial m;
+    if(entity->children.find(MATERIAL) != entity->children.end())
+        m = evaluateMaterialEntity(entity->children[MATERIAL]);
 
-    if((iss >> y).fail())
-        throwParseError(it->first);
+    RayObject* box = new RayBox(size.x(), size.y(), size.z(), m);
+    box = parseNormalModifier(box, entity);
+    box = parseCheckerTexture(box, entity);
+    box = parseRotation(box, entity);
+    box = parseTranslation(box, entity);
 
-    if((iss >> z).fail())
-        throwParseError(it->first);
-
-    return new Translation(evaluateEntity(*entity->children().begin()), x, y, z);
+    return box;
 }
 
 PointLight* Parser::evaluateLightEntity(ParseEntity* entity)
 {
-    Vector3D position;
-
-    list<pair<int, string> >::iterator it = entity->lines().begin();    
-    list<pair<int, string> >::iterator end = entity->lines().end();    
-    while(it != end)
-    {
-        istringstream iss(it->second);
-        string token;
-        if((iss >> token).fail())
-            throwParseError(it->first);
-        if(token == "pos:")
-        {
-            double x,y,z;
-             
-            if((iss >> x).fail())
-                throwParseError(it->first);
-
-            if((iss >> y).fail())
-                throwParseError(it->first);
-
-            if((iss >> z).fail())
-                throwParseError(it->first);
-            position = Vector3D(x,y,z);
-        }
-        else
-        {
-            throwParseError(it->first);
-        }
-        ++it;
-    }
-    return new PointLight(position);
+    std::map<string, Vector3D>& coordTypes = entity->coordTypes;
+    if(coordTypes.find("pos") == coordTypes.end())
+        throw std::runtime_error("light has no pos");
+    return new PointLight(coordTypes["pos"]);
 }
 
-RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
+RayCamera Parser::evaluateCameraEntity(ParseEntity* entity)
+{
+    m_logger->info("Parsing camera");
+    Vector3D location, lookat, up;
+
+    std::map<string, Vector3D>& coordTypes = entity->coordTypes;
+
+    if(coordTypes.find("location") == coordTypes.end())
+        throw std::runtime_error("camera has no location");
+    location = coordTypes["location"];
+    
+    if(coordTypes.find("lookat") == coordTypes.end())
+        throw std::runtime_error("camera has no lookat");
+    lookat = coordTypes["lookat"];
+
+    if(coordTypes.find("up") == coordTypes.end())
+        throw std::runtime_error("camera has no up");
+    up = coordTypes["up"];
+
+    return RayCamera(RayCamera(location, lookat, up));
+}
+
+RayMaterial Parser::evaluateMaterialEntity(ParseEntity* entity)
 {
     double ambient 		= 0;
 	double diffuse 		= 0;
-	double specular 		= 0;
+	double specular     = 0;
 	double specpower 	= 0;
 	double reflection 	= 0;
 	double refraction    = 0;
 	double refractionIndex = 0;
-    int r = 0;
-	int g = 0;
-	int b = 0;
-    list<pair<int, string> >::iterator it = entity->lines().begin();    
-    list<pair<int, string> >::iterator end = entity->lines().end();    
-    while(it != end)
-    {
-        istringstream iss(it->second);
-        string token;
-        double value;
-        if((iss >> token).fail())
-            throwParseError(it->first);
+    Vector3D color;
 
-        if((iss >> value).fail())
-            throwParseError(it->first);
+    std::map<string, double>& valueTypes = entity->valueTypes;
+    std::map<string, Vector3D>& coordTypes = entity->coordTypes;
 
-        if(token == "ambient:")
-            ambient = value;
-        else if(token == "diffuse:") 
-            diffuse = value;
-        else if(token == "specular:")
-            specular = value;
-        else if(token == "specpower:")
-            specpower = value;
-        else if(token == "reflection:")
-            reflection = value;
-        else if(token == "refraction:")
-            refraction = value;
-        else if(token == "refractionindex:")
-            refractionIndex = value;
-        else if(token == "color:")
-        {
-            r = value;
-            if((iss >> g).fail())
-                throwParseError(it->first);
-            if((iss >> b).fail())
-                throwParseError(it->first);
-        }
-        else
-            throwParseError(it->first);
+    // map creates a new default value(0 for double) for keys not in the map
+    ambient = valueTypes["ambient"];
+    diffuse = valueTypes["diffuse"];
+    specular = valueTypes["specular"];
+    specpower = valueTypes["specpower"];
+    reflection = valueTypes["reflection"];
+    refraction = valueTypes["refraction"];
+    refractionIndex = valueTypes["refractionIndex"];
 
-        ++it;
-    }
-    ostringstream oss;
-    oss << "Material: " << RayColor(r,g,b).toString();
-    oss << "Amb: " << ambient << " Dif: " << diffuse;
-    oss << "Spec: " << specular << " specPower: " << specpower;
-    oss << "Reflection: " << reflection;
-	oss << "RefractionL: " << refraction;
-	oss << "RefractionIndex: " << refractionIndex;
-    m_logger->debug(oss.str());
+    if(coordTypes.find("color") != coordTypes.end())
+        color = coordTypes["color"];
 
-    return RayMaterial(RayColor(r,g,b), 
+    return RayMaterial(RayColor(color.x(),color.y(),color.z()), 
                        ambient, 
                        diffuse, 
                        specular, 
@@ -542,53 +299,50 @@ RayMaterial Parser::evaluateMateriaEntity(ParseEntity* entity)
                 
 }
 
-RayCamera Parser::evaluateCameraEntity(ParseEntity* entity)
+RayObject* Parser::parseRotation(RayObject* obj, ParseEntity* entity)
 {
-    m_logger->info("Parsing camera");
-    Vector3D location, lookat, up;
-    bool locSet, lookSet, upSet;
-    locSet = lookSet = upSet = false;
-    
-    list<pair<int, string> >::iterator it = entity->lines().begin();    
-    list<pair<int, string> >::iterator end = entity->lines().end();    
-    while(it != end)
+    if(entity->coordTypes.find("rot") != entity->coordTypes.end())
+        return new Rotation(obj, entity->coordTypes["rot"]);
+    return obj;
+
+}
+
+RayObject* Parser::parseTranslation(RayObject* obj, ParseEntity* entity)
+{
+    if(entity->coordTypes.find("pos") != entity->coordTypes.end())
+        return new Translation(obj, entity->coordTypes["pos"]);
+    return obj;
+
+}
+
+RayObject* Parser::parseNormalModifier(RayObject* obj, ParseEntity* entity)
+{
+    std::map<EntityType, ParseEntity*>& children = entity->children;
+    if(children.find(NORMAL_MODIFIER) != children.end())
     {
-        string token;
-        double x,y,z;
-        istringstream iss(it->second);
-        iss >> token;
-
-        if((iss >> x).fail())
-            throwParseError(it->first);
-
-        if((iss >> y).fail())
-            throwParseError(it->first);
-
-        if((iss >> z).fail())
-            throwParseError(it->first);
-            
-        Vector3D v(x, y, z);
-        if(token == "location:")
+        valueTypes = children[NORMAL_MODIFIER]->valueTypes;
+        if(valueTypes.find("amount") == valueTypes.end())
         {
-            location = v;
-            locSet = true;
+            return obj;
         }
-        else if(token == "lookat:")
-        {
-            lookat = v;
-            lookSet = true;
-        }
-        else if(token == "up:")
-        {
-            up = v;
-            upSet = true;
-        }
-        else
-            throwParseError(it->first);
-
-        ++it;
+        double amount = valueTypes["amount"];
+        return new RandomNormalDisplacer(obj, amount);
     }
-    if(!(locSet && lookSet && upSet))
-       throwParseError(-1, "Missing attribute for camera definition"); 
-    return RayCamera(RayCamera(location, lookat, up));
+    return obj;
+}
+
+RayObject* Parser::parseCheckerTexture(RayObject* obj, ParseEntity* entity)
+{
+    std::map<EntityType, ParseEntity*>& children = entity->children;
+    if(children.find(CHECKER) != children.end())
+    {
+        cout << "CHECKER!!!" << endl;
+        coordTypes = children[CHECKER]->coordTypes;
+        Vector3D v1 = coordTypes["c1"];
+        Vector3D v2 = coordTypes["c2"];
+        RayColor c1(v1.x(), v1.y(), v1.z());
+        RayColor c2(v2.x(), v2.y(), v2.z());
+        return new CheckerTexture(obj, c1, c2);
+    }
+    return obj;
 }

@@ -7,6 +7,11 @@ Rotation::Rotation(RayObject* obj, double xrot, double yrot, double zrot)
 {
 }
 
+Rotation::Rotation(RayObject* obj, const Vector3D& rot)
+    : m_obj(obj), m_xrot(rot.x()), m_yrot(rot.y()), m_zrot(rot.z())
+{
+}
+
 bool Rotation::intersects(const Vector3D& start, 
                           const Vector3D& direction, 
                           std::vector<Intersection>& isecs)
